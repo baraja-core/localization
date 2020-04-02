@@ -34,4 +34,12 @@ class LocalizationException extends \RuntimeException
 			. 'To solve this issue: Please create tables ("core__localization_domain" and "core__localization_locale") with default data.'
 		);
 	}
+
+
+	public static function domainListIsEmpty(): void
+	{
+		throw new self(
+			'Domain list is empty. Please define project domains to table "core__localization_domain".'
+		);
+	}
 }

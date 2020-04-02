@@ -7,6 +7,7 @@ namespace Baraja\Localization;
 
 use Baraja\Doctrine\UUID\UuidIdentifier;
 use Doctrine\ORM\Mapping as ORM;
+use Nette\Security\Passwords;
 use Nette\SmartObject;
 use Nette\Utils\DateTime;
 
@@ -38,6 +39,12 @@ class Domain
 	private $domain;
 
 	/**
+	 * @var bool
+	 * @ORM\Column(type="boolean", name="`is_www`")
+	 */
+	private $www = false;
+
+	/**
 	 * @var Locale
 	 * @ORM\ManyToOne(targetEntity="\Baraja\Localization\Locale", inversedBy="domains")
 	 */
@@ -56,6 +63,18 @@ class Domain
 	 * @ORM\Column(type="boolean", name="`is_default`")
 	 */
 	private $default = false;
+
+	/**
+	 * @var string|null
+	 * @ORM\Column(type="string", nullable=true)
+	 */
+	private $protectedPassword;
+
+	/**
+	 * @var bool
+	 * @ORM\Column(type="boolean", name="`is_protected`")
+	 */
+	private $protected = true;
 
 	/**
 	 * @var \DateTime
@@ -100,6 +119,25 @@ class Domain
 	public function setHttps(bool $https): void
 	{
 		$this->https = $https;
+		$this->setUpdatedDate();
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function isWww(): bool
+	{
+		return $this->www;
+	}
+
+
+	/**
+	 * @param bool $www
+	 */
+	public function setWww(bool $www): void
+	{
+		$this->www = $www;
 		$this->setUpdatedDate();
 	}
 
@@ -176,6 +214,97 @@ class Domain
 	public function setEnvironment(string $environment): void
 	{
 		$this->environment = $environment;
+		$this->setUpdatedDate();
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function isLocalhost(): bool
+	{
+		return $this->environment === self::ENVIRONMENT_LOCALHOST;
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function isBeta(): bool
+	{
+		return $this->environment === self::ENVIRONMENT_BETA;
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function isProduction(): bool
+	{
+		return $this->environment === self::ENVIRONMENT_PRODUCTION;
+	}
+
+
+	/**
+	 * Return as BCrypt hash.
+	 *
+	 * @return string|null
+	 */
+	public function getProtectedPassword(): ?string
+	{
+		return $this->protectedPassword;
+	}
+
+
+	/**
+	 * If is string, please insert plaintext password.
+	 *
+	 * @param string|null $protectedPassword
+	 */
+	public function setProtectedPassword(?string $protectedPassword): void
+	{
+		$this->protectedPassword = $protectedPassword !== null
+			? (new Passwords)->hash($protectedPassword)
+			: null;
+
+		$this->setUpdatedDate();
+	}
+
+
+	/**
+	 * Verify process for check password is ok by internal logic.
+	 *
+	 * @param string $password
+	 * @return bool
+	 */
+	public function isPasswordOk(string $password): bool
+	{
+		$passwordService = new Passwords;
+		$is = $this->protectedPassword !== null && $passwordService->verify($password, $this->protectedPassword);
+
+		if ($is === true && $passwordService->needsRehash($this->protectedPassword) === true) {
+			$this->setProtectedPassword($password);
+		}
+
+		return $is;
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function isProtected(): bool
+	{
+		return $this->protected;
+	}
+
+
+	/**
+	 * @param bool $protected
+	 */
+	public function setProtected(bool $protected): void
+	{
+		$this->protected = $protected;
 		$this->setUpdatedDate();
 	}
 

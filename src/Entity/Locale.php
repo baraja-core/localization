@@ -69,7 +69,7 @@ class Locale
 	 */
 	public function __construct(string $locale)
 	{
-		$this->locale = $locale;
+		$this->locale = strtolower($locale);
 		$this->insertedDate = DateTime::from('now');
 		$this->domains = new ArrayCollection;
 	}

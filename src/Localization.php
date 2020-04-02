@@ -32,6 +32,12 @@ final class Localization
 	/** @var string|null */
 	private $localeContext;
 
+	/** @var string|null */
+	private $currentDomain;
+
+	/** @var LocalizationStatus|null */
+	private $status;
+
 
 	/**
 	 * @param EntityManager $entityManager
@@ -39,9 +45,12 @@ final class Localization
 	 */
 	public function __construct(EntityManager $entityManager, IStorage $storage)
 	{
+		if (PHP_SAPI === 'cli') {
+			throw new \RuntimeException('Localization is not available in CLI.');
+		}
+
 		$this->entityManager = $entityManager;
 		$this->cache = new Cache($storage, 'baraja-localization');
-		$this->processCache();
 	}
 
 
@@ -60,6 +69,10 @@ final class Localization
 	 */
 	public function getLocale(bool $fallbackToContextLocale = false): string
 	{
+		if ($this->localeDomain === null) {
+			$this->localeDomain = $this->getStatus()->getDomainToLocale()[$this->currentDomain] ?? null;
+		}
+
 		$locale = $this->localeDefined ?? $this->localeParameter ?? $this->localeDomain;
 
 		if ($fallbackToContextLocale === true) {
@@ -103,15 +116,21 @@ final class Localization
 	}
 
 
+	/**
+	 * @return string[]
+	 */
 	public function getAvailableLocales(): array
 	{
-		return ['cs', 'en'];
+		return $this->getStatus()->getAvailableLocales();
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public function getDefaultLocale(): string
 	{
-		return 'cs';
+		return $this->getStatus()->getDefaultLocale();
 	}
 
 
@@ -120,9 +139,7 @@ final class Localization
 	 */
 	public function getFallbackLocales(): array
 	{
-		return [
-			'cs' => ['sk'],
-		];
+		return $this->getStatus()->getFallbackLocales();
 	}
 
 
@@ -132,11 +149,66 @@ final class Localization
 	 */
 	public function processHttpRequest(Request $request): void
 	{
-		if (\is_string($localeParameter = $request->getUrl()->getQueryParameter('locale')) === true) {
+		$url = $request->getUrl();
+		if (\is_string($localeParameter = $url->getQueryParameter('locale')) === true) {
 			$this->localeParameter = $localeParameter;
 		}
+		$this->currentDomain = str_replace('www.', '', $url->getDomain(4));
+	}
+
+
+	/**
+	 * @internal
+	 * Clear whole internal domain cache and return current relevant localize settings.
+	 */
+	public function clearCache(): void
+	{
+		$this->cache->remove('configuration');
+	}
+
+
+	/**
+	 * Create internal LocalizationStatus entity from cache.
+	 *
+	 * @return LocalizationStatus
+	 */
+	public function getStatus(): LocalizationStatus
+	{
+		if ($this->status !== null) {
+			return $this->status;
+		}
+
+		if (($config = $this->cache->load('configuration')) === null) {
+			$this->cache->save('configuration', $config = $this->createCache(), [
+				Cache::EXPIRE => '30 minutes',
+			]);
+		}
+
+		return $this->status = new LocalizationStatus(
+			$config['availableLocales'],
+			$config['defaultLocale'],
+			$config['fallbackLocales'],
+			$config['domainToLocale'],
+			$config['domainToEnvironment'],
+			$config['domainToProtected'],
+			$config['domains']
+		);
+	}
+
+
+	/**
+	 * @return mixed[]
+	 */
+	private function createCache(): array
+	{
+		$defaultLocale = null;
+		$availableLocales = [];
+		$domainToLocale = [];
+		$domainToEnvironment = [];
+		$domainIsProtected = [];
 
 		try {
+			/** @var mixed[][]|mixed[][][] $domains */
 			$domains = $this->entityManager->getRepository(Domain::class)
 				->createQueryBuilder('domain')
 				->select('domain, locale')
@@ -144,19 +216,46 @@ final class Localization
 				->getQuery()
 				->getArrayResult();
 		} catch (TableNotFoundException $e) {
-			if (PHP_SAPI !== 'cli') {
-				LocalizationException::tableDoesNotExist();
-			}
-
-			// Skipped in case of generating schema or configurator.
-			return;
+			LocalizationException::tableDoesNotExist();
 		}
 
-		bdump($domains);
-	}
+		if ($domains === []) {
+			LocalizationException::domainListIsEmpty();
+		}
 
+		foreach ($domains as $domain) {
+			$domainToLocale[$domain['domain']] = (string) ($domain['locale']['locale'] ?? 'en');
+			$domainToEnvironment[$domain['domain']] = (string) $domain['environment'];
+			$domainIsProtected[$domain['domain']] = (bool) $domain['protected'];
+		}
 
-	private function processCache(): void
-	{
+		$locales = $this->entityManager->getRepository(Locale::class)
+			->createQueryBuilder('locale')
+			->select('PARTIAL locale.{id, locale, default}')
+			->where('locale.active = TRUE')
+			->orderBy('locale.position', 'ASC')
+			->getQuery()
+			->getArrayResult();
+
+		foreach ($locales as $locale) {
+			$availableLocales[] = $locale['locale'];
+			if ($locale['default'] === true) {
+				if ($defaultLocale !== null) {
+					trigger_error('Multiple default locales: Locale "' . $defaultLocale . '" and "' . $locale['locale'] . '" is marked as default.');
+				} else {
+					$defaultLocale = $locale['locale'];
+				}
+			}
+		}
+
+		return [
+			'availableLocales' => $availableLocales,
+			'defaultLocale' => $defaultLocale,
+			'fallbackLocales' => [],
+			'domainToLocale' => $domainToLocale,
+			'domainToEnvironment' => $domainToEnvironment,
+			'domainToProtected' => $domainIsProtected,
+			'domains' => $domains,
+		];
 	}
 }
