@@ -1,0 +1,5 @@
+services:
+	- Baraja\Localization\Localization
+
+extensions:
+	localization: Baraja\Localization\LocalizationExtension
