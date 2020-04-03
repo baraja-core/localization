@@ -7,7 +7,6 @@ namespace Baraja\Localization;
 
 use Baraja\Doctrine\UUID\UuidIdentifier;
 use Doctrine\ORM\Mapping as ORM;
-use Nette\Security\Passwords;
 use Nette\SmartObject;
 use Nette\Utils\DateTime;
 
@@ -263,10 +262,14 @@ class Domain
 	 */
 	public function setProtectedPassword(?string $protectedPassword): void
 	{
-		$this->protectedPassword = $protectedPassword !== null
-			? (new Passwords)->hash($protectedPassword)
-			: null;
+		if ($protectedPassword !== null) {
+			if (($hash = @password_hash($protectedPassword, PASSWORD_DEFAULT, [])) === false) { // @ is escalated to exception
+				throw new \RuntimeException('Computed hash is invalid. ' . error_get_last()['message']);
+			}
+			$protectedPassword = (string) $hash;
+		}
 
+		$this->protectedPassword = $protectedPassword;
 		$this->setUpdatedDate();
 	}
 
@@ -279,10 +282,7 @@ class Domain
 	 */
 	public function isPasswordOk(string $password): bool
 	{
-		$passwordService = new Passwords;
-		$is = $this->protectedPassword !== null && $passwordService->verify($password, $this->protectedPassword);
-
-		if ($is === true && $passwordService->needsRehash($this->protectedPassword) === true) {
+		if (($is = password_verify($password, $this->protectedPassword ?? '')) === true && password_needs_rehash($this->protectedPassword, PASSWORD_DEFAULT, []) === true) {
 			$this->setProtectedPassword($password);
 		}
 
