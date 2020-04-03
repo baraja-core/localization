@@ -247,6 +247,9 @@ class DomainAndLocaleTask extends BaseTask
 	}
 
 
+	/**
+	 * @param mixed[][] $locales
+	 */
 	private function renderLocaleTable(array $locales): void
 	{
 		echo "\n\n" . 'CURRENT LOCALE TABLE:' . "\n\n";

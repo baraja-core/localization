@@ -217,6 +217,7 @@ final class Localization
 				->getArrayResult();
 		} catch (TableNotFoundException $e) {
 			LocalizationException::tableDoesNotExist();
+			$domains = []; // For PhpStan
 		}
 
 		if ($domains === []) {

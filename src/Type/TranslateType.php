@@ -14,7 +14,7 @@ class TranslateType extends Type
 
 
 	/**
-	 * @param array $fieldDeclaration
+	 * @param mixed[] $fieldDeclaration
 	 * @param AbstractPlatform $platform
 	 * @return string
 	 */
@@ -37,7 +37,7 @@ class TranslateType extends Type
 
 
 	/**
-	 * @param Translation|string|null $value
+	 * @param Translation|string|mixed|null $value
 	 * @param AbstractPlatform $platform
 	 * @return string|null
 	 * @throws LocalizationException
@@ -52,11 +52,11 @@ class TranslateType extends Type
 			return $value->getSerialize();
 		}
 
-		if (\is_string($value)) {
+		if (\is_string($value) === true) {
 			return (new Translation($value))->getSerialize();
 		}
 
-		throw new LocalizationException('Language data must be Translation entity. [' . \gettype($value) . '] given.');
+		throw new LocalizationException('Language data must be Translation entity, but type "' . \gettype($value) . '" given.');
 	}
 
 
