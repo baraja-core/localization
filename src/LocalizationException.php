@@ -7,7 +7,6 @@ namespace Baraja\Localization;
 
 class LocalizationException extends \RuntimeException
 {
-
 	public static function canNotResolveLocale(?string $defined, ?string $parameter, ?string $domain): void
 	{
 		throw new self(

@@ -154,5 +154,4 @@ class Locale
 	{
 		return $this->insertedDate;
 	}
-
 }

@@ -184,8 +184,8 @@ class Translation
 	 * @internal
 	 * @return Translation
 	 */
-	public function regenerate(): Translation
+	public function regenerate(): self
 	{
-		return new Translation($this->getSerialize());
+		return new self($this->getSerialize());
 	}
 }

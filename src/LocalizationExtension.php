@@ -12,7 +12,6 @@ use Nette\PhpGenerator\ClassType;
 
 final class LocalizationExtension extends CompilerExtension
 {
-
 	public function beforeCompile(): void
 	{
 		/** @var ServiceDefinition $localization */
