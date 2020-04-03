@@ -35,6 +35,10 @@ final class LocalizationExtension extends CompilerExtension
 	 */
 	public function afterCompile(ClassType $class): void
 	{
+		if (PHP_SAPI === 'cli') {
+			return;
+		}
+
 		/** @var ServiceDefinition $localization */
 		$localization = $this->getContainerBuilder()->getDefinitionByType(Localization::class);
 
