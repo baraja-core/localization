@@ -188,9 +188,15 @@ final class Localization
 			$config['availableLocales'],
 			$config['defaultLocale'],
 			$config['fallbackLocales'],
+			$config['localeToTitleSuffix'],
+			$config['localeToTitleSeparator'],
+			$config['localeToTitleFormat'],
 			$config['domainToLocale'],
 			$config['domainToEnvironment'],
 			$config['domainToProtected'],
+			$config['domainToScheme'],
+			$config['domainToUseWww'],
+			$config['domainByEnvironment'],
 			$config['domains']
 		);
 	}
@@ -203,9 +209,15 @@ final class Localization
 	{
 		$defaultLocale = null;
 		$availableLocales = [];
+		$localeToTitleSuffix = [];
+		$localeToTitleSeparator = [];
+		$localeToTitleFormat = [];
 		$domainToLocale = [];
 		$domainToEnvironment = [];
 		$domainIsProtected = [];
+		$domainToScheme = [];
+		$domainToUseWww = [];
+		$domainByEnvironment = [];
 
 		try {
 			/** @var mixed[][]|mixed[][][] $domains */
@@ -225,14 +237,22 @@ final class Localization
 		}
 
 		foreach ($domains as $domain) {
-			$domainToLocale[$domain['domain']] = (string) ($domain['locale']['locale'] ?? 'en');
+			$domainToLocale[$domain['domain']] = $locale = (string) ($domain['locale']['locale'] ?? 'en');
 			$domainToEnvironment[$domain['domain']] = (string) $domain['environment'];
 			$domainIsProtected[$domain['domain']] = (bool) $domain['protected'];
+			$domainToScheme[$domain['domain']] = ((bool) $domain['https']) === true ? 'https' : 'http';
+			$domainToUseWww[$domain['domain']] = (bool) $domain['www'];
+			if (isset($domainByEnvironment[$domain['environment']][$locale]) === false || $domain['default'] === true) {
+				if (isset($domainByEnvironment[$domain['environment']]) === false) {
+					$domainByEnvironment[$domain['environment']] = [];
+				}
+				$domainByEnvironment[$domain['environment']][$locale] = (string) $domain['domain'];
+			}
 		}
 
 		$locales = $this->entityManager->getRepository(Locale::class)
 			->createQueryBuilder('locale')
-			->select('PARTIAL locale.{id, locale, default}')
+			->select('PARTIAL locale.{id, locale, default, titleSuffix, titleSeparator, titleFormat}')
 			->where('locale.active = TRUE')
 			->orderBy('locale.position', 'ASC')
 			->getQuery()
@@ -247,15 +267,24 @@ final class Localization
 					$defaultLocale = $locale['locale'];
 				}
 			}
+			$localeToTitleSuffix[$locale['locale']] = $locale['titleSuffix'];
+			$localeToTitleSeparator[$locale['locale']] = $locale['titleSeparator'];
+			$localeToTitleFormat[$locale['locale']] = $locale['titleFormat'];
 		}
 
 		return [
 			'availableLocales' => $availableLocales,
 			'defaultLocale' => $defaultLocale,
 			'fallbackLocales' => [],
+			'localeToTitleSuffix' => $localeToTitleSuffix,
+			'localeToTitleSeparator' => $localeToTitleSeparator,
+			'localeToTitleFormat' => $localeToTitleFormat,
 			'domainToLocale' => $domainToLocale,
 			'domainToEnvironment' => $domainToEnvironment,
 			'domainToProtected' => $domainIsProtected,
+			'domainToScheme' => $domainToScheme,
+			'domainToUseWww' => $domainToUseWww,
+			'domainByEnvironment' => $domainByEnvironment,
 			'domains' => $domains,
 		];
 	}

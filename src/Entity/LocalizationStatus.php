@@ -20,6 +20,15 @@ final class LocalizationStatus
 	/** @var string[][] */
 	private $fallbackLocales;
 
+	/** @var string[]|null[] */
+	private $localeToTitleSuffix;
+
+	/** @var string[]|null[] */
+	private $localeToTitleSeparator;
+
+	/** @var string[]|null[] */
+	private $localeToTitleFormat;
+
 	/** @var string[] */
 	private $domainToLocale;
 
@@ -29,6 +38,15 @@ final class LocalizationStatus
 	/** @var bool[] */
 	private $domainToProtected;
 
+	/** @var string[] */
+	private $domainToScheme;
+
+	/** @var bool[] */
+	private $domainToUseWww;
+
+	/** @var string[][] */
+	private $domainByEnvironment;
+
 	/** @var mixed[][]|mixed[][][] */
 	private $domains;
 
@@ -37,19 +55,31 @@ final class LocalizationStatus
 	 * @param string[] $availableLocales
 	 * @param string $defaultLocale
 	 * @param string[][] $fallbackLocales
+	 * @param string[]|null[] $localeToTitleSuffix
+	 * @param string[]|null[] $localeToTitleSeparator
+	 * @param string[]|null[] $localeToTitleFormat
 	 * @param string[] $domainToLocale
 	 * @param string[] $domainToEnvironment
 	 * @param bool[] $domainToProtected
+	 * @param string[] $domainToScheme
+	 * @param bool[] $domainToUseWww
+	 * @param string[][] $domainByEnvironment
 	 * @param mixed[][]|mixed[][][] $domains
 	 */
-	public function __construct(array $availableLocales, string $defaultLocale, array $fallbackLocales, array $domainToLocale, array $domainToEnvironment, array $domainToProtected, array $domains)
+	public function __construct(array $availableLocales, string $defaultLocale, array $fallbackLocales, array $localeToTitleSuffix, array $localeToTitleSeparator, array $localeToTitleFormat, array $domainToLocale, array $domainToEnvironment, array $domainToProtected, array $domainToScheme, array $domainToUseWww, array $domainByEnvironment, array $domains)
 	{
 		$this->availableLocales = $availableLocales;
 		$this->defaultLocale = $defaultLocale;
 		$this->fallbackLocales = $fallbackLocales;
+		$this->localeToTitleSuffix = $localeToTitleSuffix;
+		$this->localeToTitleSeparator = $localeToTitleSeparator;
+		$this->localeToTitleFormat = $localeToTitleFormat;
 		$this->domainToLocale = $domainToLocale;
 		$this->domainToEnvironment = $domainToEnvironment;
 		$this->domainToProtected = $domainToProtected;
+		$this->domainToScheme = $domainToScheme;
+		$this->domainToUseWww = $domainToUseWww;
+		$this->domainByEnvironment = $domainByEnvironment;
 		$this->domains = $domains;
 	}
 
@@ -82,6 +112,33 @@ final class LocalizationStatus
 
 
 	/**
+	 * @return string[]|null[]
+	 */
+	public function getLocaleToTitleSuffix(): array
+	{
+		return $this->localeToTitleSuffix;
+	}
+
+
+	/**
+	 * @return string[]|null[]
+	 */
+	public function getLocaleToTitleSeparator(): array
+	{
+		return $this->localeToTitleSeparator;
+	}
+
+
+	/**
+	 * @return string[]|null[]
+	 */
+	public function getLocaleToTitleFormat(): array
+	{
+		return $this->localeToTitleFormat;
+	}
+
+
+	/**
 	 * @return string[]
 	 */
 	public function getDomainToLocale(): array
@@ -105,6 +162,33 @@ final class LocalizationStatus
 	public function getDomainToProtected(): array
 	{
 		return $this->domainToProtected;
+	}
+
+
+	/**
+	 * @return string[]
+	 */
+	public function getDomainToScheme(): array
+	{
+		return $this->domainToScheme;
+	}
+
+
+	/**
+	 * @return bool[]
+	 */
+	public function getDomainToUseWww(): array
+	{
+		return $this->domainToUseWww;
+	}
+
+
+	/**
+	 * @return string[][]
+	 */
+	public function getDomainByEnvironment(): array
+	{
+		return $this->domainByEnvironment;
 	}
 
 
