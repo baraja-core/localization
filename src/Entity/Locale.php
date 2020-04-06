@@ -63,6 +63,24 @@ class Locale
 	 */
 	private $domains;
 
+	/**
+	 * @var string|null
+	 * @ORM\Column(type="string", nullable=true)
+	 */
+	private $titleSuffix;
+
+	/**
+	 * @var string|null
+	 * @ORM\Column(type="string", length=8, nullable=true)
+	 */
+	private $titleSeparator;
+
+	/**
+	 * @var string|null
+	 * @ORM\Column(type="string", nullable=true)
+	 */
+	private $titleFormat;
+
 
 	/**
 	 * @param string $locale
@@ -153,5 +171,59 @@ class Locale
 	public function getInsertedDate(): \DateTime
 	{
 		return $this->insertedDate;
+	}
+
+
+	/**
+	 * @return string|null
+	 */
+	public function getTitleSuffix(): ?string
+	{
+		return $this->titleSuffix;
+	}
+
+
+	/**
+	 * @param string|null $titleSuffix
+	 */
+	public function setTitleSuffix(?string $titleSuffix): void
+	{
+		$this->titleSuffix = $titleSuffix;
+	}
+
+
+	/**
+	 * @return string|null
+	 */
+	public function getTitleSeparator(): ?string
+	{
+		return $this->titleSeparator;
+	}
+
+
+	/**
+	 * @param string|null $titleSeparator
+	 */
+	public function setTitleSeparator(?string $titleSeparator): void
+	{
+		$this->titleSeparator = $titleSeparator;
+	}
+
+
+	/**
+	 * @return string|null
+	 */
+	public function getTitleFormat(): ?string
+	{
+		return $this->titleFormat;
+	}
+
+
+	/**
+	 * @param string|null $titleFormat
+	 */
+	public function setTitleFormat(?string $titleFormat): void
+	{
+		$this->titleFormat = $titleFormat;
 	}
 }
