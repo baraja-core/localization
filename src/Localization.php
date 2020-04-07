@@ -45,10 +45,6 @@ final class Localization
 	 */
 	public function __construct(EntityManager $entityManager, IStorage $storage)
 	{
-		if (PHP_SAPI === 'cli') {
-			throw new \RuntimeException('Localization is not available in CLI.');
-		}
-
 		$this->entityManager = $entityManager;
 		$this->cache = new Cache($storage, 'baraja-localization');
 	}
@@ -69,6 +65,10 @@ final class Localization
 	 */
 	public function getLocale(bool $fallbackToContextLocale = false): string
 	{
+		if (PHP_SAPI === 'cli') {
+			throw new \RuntimeException('Localization: Current locale is not available in CLI.');
+		}
+
 		if ($this->localeDomain === null) {
 			$this->localeDomain = $this->getStatus()->getDomainToLocale()[$this->currentDomain] ?? null;
 		}
@@ -149,6 +149,10 @@ final class Localization
 	 */
 	public function processHttpRequest(Request $request): void
 	{
+		if (PHP_SAPI === 'cli') {
+			throw new \RuntimeException('Localization: Processing HTTP request is not available in CLI.');
+		}
+
 		$url = $request->getUrl();
 		if (\is_string($localeParameter = $url->getQueryParameter('locale')) === true) {
 			$this->localeParameter = $localeParameter;
