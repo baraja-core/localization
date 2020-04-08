@@ -8,13 +8,14 @@ namespace Baraja\Localization;
 use Baraja\Doctrine\EntityManager;
 use Baraja\PackageManager\Composer\BaseTask;
 use Baraja\PackageManager\Helpers;
+use Baraja\PackageManager\PackageRegistrator;
 use Doctrine\DBAL\Exception\TableNotFoundException;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Nette\Utils\Random;
 
 /**
- * Priority: 4
+ * Priority: 90
  */
 class DomainAndLocaleTask extends BaseTask
 {
@@ -30,6 +31,15 @@ class DomainAndLocaleTask extends BaseTask
 	 */
 	public function run(): bool
 	{
+		try {
+			if (PackageRegistrator::getCiDetect() !== null) {
+				echo 'CI environment detected: Schema generating skipped.';
+
+				return true;
+			}
+		} catch (\Exception $e) {
+		}
+
 		$this->entityManager = $this->getContainer()->getByType(EntityManager::class);
 		echo 'Locales:' . "\n\n";
 
@@ -293,17 +303,18 @@ class DomainAndLocaleTask extends BaseTask
 		$environments = [];
 		$possibleEnvironments = [Domain::ENVIRONMENT_LOCALHOST, Domain::ENVIRONMENT_BETA, Domain::ENVIRONMENT_PRODUCTION];
 
-		echo '| Environment | HTTPS | WWW | Locale | Pass | Protected |  Inserted date   |  Updated date    | Domain |' . "\n";
-		echo '|-------------|-------|-----|--------|------|-----------|------------------|------------------|--------|' . "\n";
+		echo '| Environment | HTTPS | WWW | Locale | Pass | Protected | Default |  Inserted date   |  Updated date    | Domain |' . "\n";
+		echo '|-------------|-------|-----|--------|------|-----------|---------|------------------|------------------|--------|' . "\n";
 
 		foreach ($domains as $domain) {
 			$environments[$domain->getEnvironment()] = true;
 			echo '|' . str_pad($domain->getEnvironment(), 13, ' ', STR_PAD_LEFT);
-			echo '|' . str_pad($domain->isHttps() ? 'y' : 'n', 7, ' ', STR_PAD_BOTH);
-			echo '|' . str_pad($domain->isWww() ? 'y' : 'n', 5, ' ', STR_PAD_BOTH);
+			echo '|' . str_pad($domain->isHttps() ? 'y' : '-', 7, ' ', STR_PAD_BOTH);
+			echo '|' . str_pad($domain->isWww() ? 'y' : '-', 5, ' ', STR_PAD_BOTH);
 			echo '|' . str_pad($domain->getLocale(), 8, ' ', STR_PAD_BOTH);
 			echo '|' . str_pad($domain->getProtectedPassword() === null ? '-' : 'yes', 6, ' ', STR_PAD_BOTH);
-			echo '|' . str_pad($domain->isProtected() ? 'y' : 'n', 11, ' ', STR_PAD_BOTH);
+			echo '|' . str_pad($domain->isProtected() ? 'y' : '-', 11, ' ', STR_PAD_BOTH);
+			echo '|' . str_pad($domain->isDefault() ? 'y' : '-', 11, ' ', STR_PAD_BOTH);
 			echo '|' . str_pad($domain->getInsertedDate()->format('Y-m-d H:i'), 18, ' ', STR_PAD_BOTH);
 			echo '|' . str_pad($domain->getUpdatedDate()->format('Y-m-d H:i'), 18, ' ', STR_PAD_BOTH);
 			echo '| ' . $domain->getDomain() . ' |' . "\n";
