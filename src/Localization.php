@@ -75,7 +75,7 @@ final class Localization
 
 		$locale = $this->localeDefined ?? $this->localeParameter ?? $this->localeDomain;
 
-		if ($fallbackToContextLocale === true) {
+		if ($fallbackToContextLocale === true && $locale === null) { // Fallback only in case of unmatched locale
 			if ($this->localeContext === null) {
 				LocalizationException::contextLocaleIsEmpty($locale);
 			}
@@ -144,6 +144,11 @@ final class Localization
 
 
 	/**
+	 * Define basic localization configuration by current HTTP request.
+	 *
+	 * Main localization match is defined by current domain (locale by domain detection).
+	 * Secondary detection (for multiple locales within a single domain) is GET ?locale parameter.
+	 *
 	 * @internal for DIC.
 	 * @param Request $request
 	 */
@@ -162,8 +167,9 @@ final class Localization
 
 
 	/**
-	 * @internal
 	 * Clear whole internal domain cache and return current relevant localize settings.
+	 *
+	 * @internal
 	 */
 	public function clearCache(): void
 	{
