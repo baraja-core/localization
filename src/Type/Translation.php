@@ -33,9 +33,7 @@ class Translation
 
 			if (PHP_VERSION_ID < 70000) {
 				if ($json === '') {
-					throw new LocalizationException(
-						'Syntax error:' . "\nJson: " . $json . "\n\nOriginal data:\n" . $data
-					);
+					throw new LocalizationException('Syntax error:' . "\nJson: " . $json . "\n\nOriginal data:\n" . $data);
 				}
 
 				if (\defined('JSON_C_VERSION') && !preg_match('##u', $json)) {
@@ -85,11 +83,11 @@ class Translation
 			$language = LocalizationHelper::getLocale(true);
 		}
 
-		if (!\is_array($this->storage)) {
+		if (\is_array($this->storage) === false) {
 			return '#INVALID_DATA#';
 		}
 
-		if (isset($this->storage[$language])) {
+		if (isset($this->storage[$language]) === true) {
 			return $this->storage[$language];
 		}
 
@@ -122,7 +120,7 @@ class Translation
 			$language = LocalizationHelper::getLocale(true);
 		}
 
-		if (isset($this->storage[$language]) && $this->storage[$language] === $haystack) {
+		if (isset($this->storage[$language]) === true && $this->storage[$language] === $haystack) {
 			return false;
 		}
 
