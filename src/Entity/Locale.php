@@ -18,7 +18,8 @@ use Nette\Utils\DateTime;
  * @ORM\Table(
  *    name="core__localization_locale",
  *    indexes={
- *       @Index(name="locale__locale_id", columns={"locale", "id"})
+ *       @Index(name="locale__locale_id", columns={"locale", "id"}),
+ *       @Index(name="locale__active", columns={"active"})
  *    }
  * )
  */
