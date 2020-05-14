@@ -135,6 +135,17 @@ final class Localization
 
 
 	/**
+	 * Rewriting table for the most used languages sorted according to national customs.
+	 * For example, if there is no Slovak, it is better to rewrite the language first to Czech and then to English.
+	 *
+	 * In format: [
+	 *    'locale' => ['fallback', ...]
+	 * ]
+	 *
+	 * For example: [
+	 *    'cs' => ['sk', 'en']
+	 * ]
+	 *
 	 * @return string[][]
 	 */
 	public function getFallbackLocales(): array
@@ -285,7 +296,7 @@ final class Localization
 		return [
 			'availableLocales' => $availableLocales,
 			'defaultLocale' => $defaultLocale,
-			'fallbackLocales' => [],
+			'fallbackLocales' => [], // TODO: Implement smart logic for get fallback languages by common convention.
 			'localeToTitleSuffix' => $localeToTitleSuffix,
 			'localeToTitleSeparator' => $localeToTitleSeparator,
 			'localeToTitleFormat' => $localeToTitleFormat,
