@@ -94,23 +94,15 @@ class Translation
 		}
 
 		if ($fallback === true) {
-			$fallbackLanguages = LocalizationHelper::getFallbackLocales();
-
-			if (isset($fallbackLanguages[$language])) {
-				if (\is_string($fallbackLanguages[$language]) && isset($this->storage[$fallbackLanguages[$language]])) {
-					return $this->storage[$fallbackLanguages[$language]];
-				}
-
-				if (\is_array($fallbackLanguages[$language])) {
-					foreach ($fallbackLanguages[$language] as $fallbackLanguage) {
-						if (isset($this->storage[$fallbackLanguage])) {
-							return $this->storage[$fallbackLanguage];
-						}
+			if (isset(($fallbackLanguages = LocalizationHelper::getFallbackLocales())[$language]) === true) {
+				foreach ($fallbackLanguages[$language] as $fallbackLanguage) {
+					if (isset($this->storage[$fallbackLanguage]) === true) {
+						return $this->storage[$fallbackLanguage];
 					}
 				}
 			}
 
-			if (\is_array($this->storage)) {
+			if (\is_array($this->storage) === true) {
 				return $this->storage[array_keys($this->storage)[0]];
 			}
 		}
