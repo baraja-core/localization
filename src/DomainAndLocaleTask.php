@@ -51,18 +51,26 @@ class DomainAndLocaleTask extends BaseTask
 			$this->fixLocales();
 		}
 
-		$this->renderLocaleTable($locales = $this->selectLocales());
-
-		while ($this->ask('Create new locale?', ['y', 'n']) === 'y') {
-			$this->createLocale();
-			$this->renderLocaleTable($locales = $this->selectLocales());
+		if (PackageRegistrator::isConfigurationMode() === true || $this->renderLocaleTable($locales = $this->selectLocales()) === 0) {
+			while ($this->ask('Create new locale?', ['y', 'n']) === 'y') {
+				$this->createLocale();
+				$this->renderLocaleTable($locales = $this->selectLocales());
+			}
+		} else {
+			echo 'Locale settings was skipped, because table contains some locales.';
+			echo 'For change some values please enable the Configuration mode.';
+			echo "\n\n";
 		}
 
-		$this->renderDomainTable();
-
-		while ($this->ask('Create new domain?', ['y', 'n']) === 'y') {
-			$this->createDomain();
-			$this->renderDomainTable();
+		if (PackageRegistrator::isConfigurationMode() === true || $this->renderDomainTable() === 0) {
+			while ($this->ask('Create new domain?', ['y', 'n']) === 'y') {
+				$this->createDomain();
+				$this->renderDomainTable();
+			}
+		} else {
+			echo 'Domain settings was skipped, because table contains some domains.';
+			echo 'For change some values please enable the Configuration mode.';
+			echo "\n\n";
 		}
 
 		return true;
@@ -258,9 +266,12 @@ class DomainAndLocaleTask extends BaseTask
 
 
 	/**
+	 * Render current locale table and return count of locales.
+	 *
 	 * @param mixed[][] $locales
+	 * @return int
 	 */
-	private function renderLocaleTable(array $locales): void
+	private function renderLocaleTable(array $locales): int
 	{
 		echo "\n\n" . 'CURRENT LOCALE TABLE:' . "\n\n";
 		echo '| Locale | Default | Active | Position |  Inserted date   |' . "\n";
@@ -283,10 +294,17 @@ class DomainAndLocaleTask extends BaseTask
 		}
 
 		echo "\n\n";
+
+		return \count($locales);
 	}
 
 
-	private function renderDomainTable(): void
+	/**
+	 * Render current domain table and return count of domains.
+	 *
+	 * @return int
+	 */
+	private function renderDomainTable(): int
 	{
 		$this->createDefaultLocalhost();
 
@@ -331,6 +349,8 @@ class DomainAndLocaleTask extends BaseTask
 				}
 			}
 		}
+
+		return \count($domains);
 	}
 
 
