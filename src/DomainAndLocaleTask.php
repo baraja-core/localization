@@ -332,7 +332,7 @@ class DomainAndLocaleTask extends BaseTask
 			echo '|' . str_pad($domain->getLocale(), 8, ' ', STR_PAD_BOTH);
 			echo '|' . str_pad($domain->getProtectedPassword() === null ? '-' : 'yes', 6, ' ', STR_PAD_BOTH);
 			echo '|' . str_pad($domain->isProtected() ? 'y' : '-', 11, ' ', STR_PAD_BOTH);
-			echo '|' . str_pad($domain->isDefault() ? 'y' : '-', 11, ' ', STR_PAD_BOTH);
+			echo '|' . str_pad($domain->isDefault() ? 'y' : '-', 9, ' ', STR_PAD_BOTH);
 			echo '|' . str_pad($domain->getInsertedDate()->format('Y-m-d H:i'), 18, ' ', STR_PAD_BOTH);
 			echo '|' . str_pad($domain->getUpdatedDate()->format('Y-m-d H:i'), 18, ' ', STR_PAD_BOTH);
 			echo '| ' . $domain->getDomain() . ' |' . "\n";
