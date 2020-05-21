@@ -7,6 +7,8 @@ namespace Baraja\Localization;
 
 use Baraja\Doctrine\EntityManager;
 use Doctrine\DBAL\Exception\TableNotFoundException;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Nette\Caching\Cache;
 use Nette\Caching\IStorage;
 use Nette\Http\Request;
@@ -220,6 +222,23 @@ final class Localization
 			$config['domainByEnvironment'],
 			$config['domains']
 		);
+	}
+
+
+	/**
+	 * @param string $locale
+	 * @return Locale
+	 * @throws NoResultException|NonUniqueResultException
+	 */
+	public function getLocaleEntity(string $locale): Locale
+	{
+		return $this->entityManager->getRepository(Locale::class)
+			->createQueryBuilder('locale')
+			->where('locale.locale = :locale')
+			->setParameter('locale', $locale)
+			->setMaxResults(1)
+			->getQuery()
+			->getSingleResult();
 	}
 
 
