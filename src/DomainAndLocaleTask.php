@@ -310,13 +310,14 @@ class DomainAndLocaleTask extends BaseTask
 
 		echo "\n\n" . 'CURRENT DOMAIN TABLE:' . "\n\n";
 
-		/** @var Domain[] $domains */
-		$domains = $domains = $this->entityManager->getRepository(Domain::class)
+		/** @var mixed[][]|mixed[][][] $domains */
+		$domains = $this->entityManager->getRepository(Domain::class)
 			->createQueryBuilder('domain')
-			->select('domain, locale')
+			->select('PARTIAL domain.{id, environment, https, www, protectedPassword, protected, default, insertedDate, updatedDate, domain}')
+			->addSelect('PARTIAL locale.{id, locale}')
 			->leftJoin('domain.locale', 'locale')
 			->getQuery()
-			->getResult();
+			->getArrayResult();
 
 		$environments = [];
 		$possibleEnvironments = [Domain::ENVIRONMENT_LOCALHOST, Domain::ENVIRONMENT_BETA, Domain::ENVIRONMENT_PRODUCTION];
@@ -325,17 +326,24 @@ class DomainAndLocaleTask extends BaseTask
 		echo '|-------------|-------|-----|--------|------|-----------|---------|------------------|------------------|--------|' . "\n";
 
 		foreach ($domains as $domain) {
-			$environments[$domain->getEnvironment()] = true;
-			echo '|' . str_pad($domain->getEnvironment(), 13, ' ', STR_PAD_LEFT);
-			echo '|' . str_pad($domain->isHttps() ? 'y' : '-', 7, ' ', STR_PAD_BOTH);
-			echo '|' . str_pad($domain->isWww() ? 'y' : '-', 5, ' ', STR_PAD_BOTH);
-			echo '|' . str_pad($domain->getLocale(), 8, ' ', STR_PAD_BOTH);
-			echo '|' . str_pad($domain->getProtectedPassword() === null ? '-' : 'yes', 6, ' ', STR_PAD_BOTH);
-			echo '|' . str_pad($domain->isProtected() ? 'y' : '-', 11, ' ', STR_PAD_BOTH);
-			echo '|' . str_pad($domain->isDefault() ? 'y' : '-', 9, ' ', STR_PAD_BOTH);
-			echo '|' . str_pad($domain->getInsertedDate()->format('Y-m-d H:i'), 18, ' ', STR_PAD_BOTH);
-			echo '|' . str_pad($domain->getUpdatedDate()->format('Y-m-d H:i'), 18, ' ', STR_PAD_BOTH);
-			echo '| ' . $domain->getDomain() . ' |' . "\n";
+			if (isset($domain['locale']['locale']) === false) {
+				throw new \RuntimeException(
+					'Database record for domain "' . $domain['domain'] . '" (' . $domain['id'] . ') is broken.'
+					. "\n" . 'Please fix column "locale_id" in table "core__localization_domain" manually and run this task again.'
+				);
+			}
+
+			$environments[$domain['environment']] = true;
+			echo '|' . str_pad($domain['environment'], 13, ' ', STR_PAD_LEFT);
+			echo '|' . str_pad($domain['https'] ? 'y' : '-', 7, ' ', STR_PAD_BOTH);
+			echo '|' . str_pad($domain['www'] ? 'y' : '-', 5, ' ', STR_PAD_BOTH);
+			echo '|' . str_pad($domain['locale']['locale'], 8, ' ', STR_PAD_BOTH);
+			echo '|' . str_pad($domain['protectedPassword'] === null ? '-' : 'yes', 6, ' ', STR_PAD_BOTH);
+			echo '|' . str_pad($domain['protected'] ? 'y' : '-', 11, ' ', STR_PAD_BOTH);
+			echo '|' . str_pad($domain['default'] ? 'y' : '-', 9, ' ', STR_PAD_BOTH);
+			echo '|' . str_pad($domain['insertedDate']->format('Y-m-d H:i'), 18, ' ', STR_PAD_BOTH);
+			echo '|' . str_pad($domain['updatedDate']->format('Y-m-d H:i'), 18, ' ', STR_PAD_BOTH);
+			echo '| ' . $domain['domain'] . ' |' . "\n";
 		}
 
 		echo "\n\n";
