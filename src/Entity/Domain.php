@@ -44,7 +44,7 @@ class Domain
 	private $www = false;
 
 	/**
-	 * @var Locale
+	 * @var Locale|null
 	 * @ORM\ManyToOne(targetEntity="\Baraja\Localization\Locale", inversedBy="domains")
 	 */
 	private $locale;
@@ -165,6 +165,10 @@ class Domain
 	 */
 	public function getLocale(): string
 	{
+		if ($this->locale === null) {
+			throw new \RuntimeException('Domain locale is empty. Did you select all values?');
+		}
+
 		return $this->locale->getLocale();
 	}
 
