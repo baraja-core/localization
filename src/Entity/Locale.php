@@ -94,7 +94,7 @@ class Locale
 	 */
 	public function __construct(string $locale)
 	{
-		$this->locale = strtolower($locale);
+		$this->locale = strtolower(trim($locale));
 		$this->insertedDate = DateTime::from('now');
 		$this->domains = new ArrayCollection;
 	}
@@ -195,7 +195,7 @@ class Locale
 	 */
 	public function setTitleSuffix(?string $titleSuffix): void
 	{
-		$this->titleSuffix = $titleSuffix;
+		$this->titleSuffix = trim($titleSuffix ?? '') ?: null;
 	}
 
 
@@ -213,7 +213,7 @@ class Locale
 	 */
 	public function setTitleSeparator(?string $titleSeparator): void
 	{
-		$this->titleSeparator = $titleSeparator;
+		$this->titleSeparator = trim($titleSeparator ?? '') ?: null;
 	}
 
 
@@ -231,7 +231,7 @@ class Locale
 	 */
 	public function setTitleFormat(?string $titleFormat): void
 	{
-		$this->titleFormat = $titleFormat;
+		$this->titleFormat = trim($titleFormat ?? '') ?: null;
 	}
 
 
@@ -249,6 +249,6 @@ class Locale
 	 */
 	public function setSiteName(?string $siteName): void
 	{
-		$this->siteName = $siteName;
+		$this->siteName = trim($siteName ?? '') ?: null;
 	}
 }
