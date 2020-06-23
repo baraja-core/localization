@@ -214,6 +214,7 @@ final class Localization
 			$config['localeToTitleSuffix'],
 			$config['localeToTitleSeparator'],
 			$config['localeToTitleFormat'],
+			$config['localeToSiteName'],
 			$config['domainToLocale'],
 			$config['domainToEnvironment'],
 			$config['domainToProtected'],
@@ -252,6 +253,7 @@ final class Localization
 		$localeToTitleSuffix = [];
 		$localeToTitleSeparator = [];
 		$localeToTitleFormat = [];
+		$localeToSiteName = [];
 		$domainToLocale = [];
 		$domainToEnvironment = [];
 		$domainIsProtected = [];
@@ -292,7 +294,7 @@ final class Localization
 
 		$locales = $this->entityManager->getRepository(Locale::class)
 			->createQueryBuilder('locale')
-			->select('PARTIAL locale.{id, locale, default, titleSuffix, titleSeparator, titleFormat}')
+			->select('PARTIAL locale.{id, locale, default, titleSuffix, titleSeparator, titleFormat, siteName}')
 			->where('locale.active = TRUE')
 			->orderBy('locale.position', 'ASC')
 			->getQuery()
@@ -310,6 +312,7 @@ final class Localization
 			$localeToTitleSuffix[$locale['locale']] = $locale['titleSuffix'];
 			$localeToTitleSeparator[$locale['locale']] = $locale['titleSeparator'];
 			$localeToTitleFormat[$locale['locale']] = $locale['titleFormat'];
+			$localeToSiteName[$locale['locale']] = $locale['siteName'];
 		}
 
 		return [
@@ -319,6 +322,7 @@ final class Localization
 			'localeToTitleSuffix' => $localeToTitleSuffix,
 			'localeToTitleSeparator' => $localeToTitleSeparator,
 			'localeToTitleFormat' => $localeToTitleFormat,
+			'localeToSiteName' => $localeToSiteName,
 			'domainToLocale' => $domainToLocale,
 			'domainToEnvironment' => $domainToEnvironment,
 			'domainToProtected' => $domainIsProtected,
