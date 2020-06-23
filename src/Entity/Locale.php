@@ -48,7 +48,7 @@ class Locale
 
 	/**
 	 * @var int
-	 * @ORM\Column(type="integer")
+	 * @ORM\Column(type="smallint")
 	 */
 	private $position = 1;
 
@@ -168,6 +168,14 @@ class Locale
 	 */
 	public function setPosition(int $position): void
 	{
+		if ($position < 0) {
+			$position = 0;
+		}
+
+		if ($position > 32767) {
+			$position = 32767;
+		}
+
 		$this->position = $position;
 	}
 
