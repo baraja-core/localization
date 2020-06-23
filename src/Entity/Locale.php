@@ -82,6 +82,12 @@ class Locale
 	 */
 	private $titleFormat;
 
+	/**
+	 * @var string|null
+	 * @ORM\Column(type="string", nullable=true)
+	 */
+	private $siteName;
+
 
 	/**
 	 * @param string $locale
@@ -226,5 +232,23 @@ class Locale
 	public function setTitleFormat(?string $titleFormat): void
 	{
 		$this->titleFormat = $titleFormat;
+	}
+
+
+	/**
+	 * @return string|null
+	 */
+	public function getSiteName(): ?string
+	{
+		return $this->siteName;
+	}
+
+
+	/**
+	 * @param string|null $siteName
+	 */
+	public function setSiteName(?string $siteName): void
+	{
+		$this->siteName = $siteName;
 	}
 }
