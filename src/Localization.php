@@ -119,6 +119,23 @@ final class Localization
 
 
 	/**
+	 * Return Domain::ENVIRONMENT_* constant for current request.
+	 * If environment detection failed, method keep "production".
+	 * In case of CLI return "production".
+	 *
+	 * @return string
+	 */
+	public function getEnvironment(): string
+	{
+		if (PHP_SAPI === 'cli' || $this->currentDomain === null) {
+			return Domain::ENVIRONMENT_PRODUCTION;
+		}
+
+		return $this->getStatus()->getDomainToEnvironment()[$this->currentDomain] ?? Domain::ENVIRONMENT_PRODUCTION;
+	}
+
+
+	/**
 	 * @return string[]
 	 */
 	public function getAvailableLocales(): array
@@ -127,9 +144,6 @@ final class Localization
 	}
 
 
-	/**
-	 * @return string
-	 */
 	public function getDefaultLocale(): string
 	{
 		return $this->getStatus()->getDefaultLocale();
