@@ -17,7 +17,7 @@ use Nette\Utils\Random;
 /**
  * Priority: 90
  */
-class DomainAndLocaleTask extends BaseTask
+final class DomainAndLocaleTask extends BaseTask
 {
 
 	/** @var EntityManager */

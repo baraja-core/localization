@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Baraja\Localization;
 
 
-class Translation
+final class Translation
 {
 
 	/** @var string[]|null */
