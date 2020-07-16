@@ -13,7 +13,6 @@ trait TranslateObject
 {
 	use SmartObject;
 
-
 	/**
 	 * ->getName(): Translation           load property only
 	 * ->setName('Jan'): void             set value in current language
