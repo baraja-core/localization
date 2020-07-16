@@ -9,6 +9,7 @@ use Baraja\Doctrine\UUID\UuidIdentifier;
 use Doctrine\ORM\Mapping as ORM;
 use Nette\SmartObject;
 use Nette\Utils\DateTime;
+use Nette\Utils\Strings;
 
 /**
  * @ORM\Entity()
@@ -50,7 +51,8 @@ class Domain
 	private $locale;
 
 	/**
-	 * localhost|beta|production
+	 * Value is constant of Domain::ENVIRONMENT_*
+	 * Possible values: "localhost", "beta", "production".
 	 *
 	 * @var string
 	 * @ORM\Column(type="string", length=10)
@@ -90,9 +92,9 @@ class Domain
 
 	public function __construct(string $domain, Locale $locale, string $environment = self::ENVIRONMENT_BETA)
 	{
-		$this->domain = $domain;
+		$this->setDomain($domain);
 		$this->locale = $locale;
-		$this->environment = $environment;
+		$this->setEnvironment($environment);
 		$this->insertedDate = DateTime::from('now');
 		$this->updatedDate = DateTime::from('now');
 	}
@@ -132,6 +134,13 @@ class Domain
 
 	public function setDomain(string $domain): void
 	{
+		if (!preg_match('/^(?:[-A-Za-z0-9]+\.)+[A-Za-z]{2,6}$/', $domain)) {
+			throw new \InvalidArgumentException('Domain "' . $domain . '" is not in valid format.');
+		}
+		if (Strings::length($domain) > 255) {
+			throw new \InvalidArgumentException('The maximum length of the domain is 8 characters, but "' . $domain . '" given.');
+		}
+
 		$this->domain = $domain;
 		$this->setUpdatedDate();
 	}
@@ -169,12 +178,20 @@ class Domain
 
 	public function getEnvironment(): string
 	{
+		if (\in_array($this->environment, [self::ENVIRONMENT_LOCALHOST, self::ENVIRONMENT_BETA, self::ENVIRONMENT_PRODUCTION], true) === false) {
+			throw new \RuntimeException('Environment "' . $this->environment . '" is invalid. Please fix broken database record.');
+		}
+
 		return $this->environment;
 	}
 
 
 	public function setEnvironment(string $environment): void
 	{
+		if (\in_array($environment, $environments = [self::ENVIRONMENT_LOCALHOST, self::ENVIRONMENT_BETA, self::ENVIRONMENT_PRODUCTION], true) === false) {
+			throw new \InvalidArgumentException('Environment "' . $environment . '" must be in "' . implode('", "', $environments) . '".');
+		}
+
 		$this->environment = $environment;
 		$this->setUpdatedDate();
 	}

@@ -12,6 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
 use Nette\SmartObject;
 use Nette\Utils\DateTime;
+use Nette\Utils\Strings;
 
 /**
  * @ORM\Entity()
@@ -66,7 +67,7 @@ class Locale
 
 	/**
 	 * @var string|null
-	 * @ORM\Column(type="string", nullable=true)
+	 * @ORM\Column(type="string", length=64, nullable=true)
 	 */
 	private $titleSuffix;
 
@@ -78,20 +79,24 @@ class Locale
 
 	/**
 	 * @var string|null
-	 * @ORM\Column(type="string", nullable=true)
+	 * @ORM\Column(type="string", length=64, nullable=true)
 	 */
 	private $titleFormat;
 
 	/**
 	 * @var string|null
-	 * @ORM\Column(type="string", nullable=true)
+	 * @ORM\Column(type="string", length=64, nullable=true)
 	 */
 	private $siteName;
 
 
 	public function __construct(string $locale)
 	{
-		$this->locale = strtolower(trim($locale));
+		if (!preg_match('/^[a-z]{2}$/', $locale = strtolower(trim($locale)))) {
+			throw new \InvalidArgumentException('Locale "' . $locale . '" must be 2 [a-z] characters.');
+		}
+
+		$this->locale = $locale;
 		$this->insertedDate = DateTime::from('now');
 		$this->domains = new ArrayCollection;
 	}
@@ -144,7 +149,6 @@ class Locale
 		if ($position < 0) {
 			$position = 0;
 		}
-
 		if ($position > 32767) {
 			$position = 32767;
 		}
@@ -167,6 +171,10 @@ class Locale
 
 	public function setTitleSuffix(?string $titleSuffix): void
 	{
+		if ($titleSuffix !== null && Strings::length($titleSuffix) > 64) {
+			throw new \InvalidArgumentException('The maximum length of the title suffix is 64 characters, but "' . $titleSuffix . '" given.');
+		}
+
 		$this->titleSuffix = trim($titleSuffix ?? '') ?: null;
 	}
 
@@ -179,6 +187,10 @@ class Locale
 
 	public function setTitleSeparator(?string $titleSeparator): void
 	{
+		if ($titleSeparator !== null && Strings::length($titleSeparator) > 8) {
+			throw new \InvalidArgumentException('The maximum length of the title separator is 8 characters, but "' . $titleSeparator . '" given.');
+		}
+
 		$this->titleSeparator = trim($titleSeparator ?? '') ?: null;
 	}
 
@@ -191,6 +203,10 @@ class Locale
 
 	public function setTitleFormat(?string $titleFormat): void
 	{
+		if ($titleFormat !== null && Strings::length($titleFormat) > 64) {
+			throw new \InvalidArgumentException('The maximum length of the title format is 64 characters, but "' . $titleFormat . '" given.');
+		}
+
 		$this->titleFormat = trim($titleFormat ?? '') ?: null;
 	}
 
@@ -203,6 +219,10 @@ class Locale
 
 	public function setSiteName(?string $siteName): void
 	{
+		if ($siteName !== null && Strings::length($siteName) > 64) {
+			throw new \InvalidArgumentException('The maximum length of the site name is 64 characters, but "' . $siteName . '" given.');
+		}
+
 		$this->siteName = trim($siteName ?? '') ?: null;
 	}
 }
