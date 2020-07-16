@@ -88,11 +88,6 @@ class Domain
 	private $updatedDate;
 
 
-	/**
-	 * @param string $domain
-	 * @param Locale $locale
-	 * @param string $environment
-	 */
 	public function __construct(string $domain, Locale $locale, string $environment = self::ENVIRONMENT_BETA)
 	{
 		$this->domain = $domain;
@@ -103,18 +98,12 @@ class Domain
 	}
 
 
-	/**
-	 * @return bool
-	 */
 	public function isHttps(): bool
 	{
 		return $this->https;
 	}
 
 
-	/**
-	 * @param bool $https
-	 */
 	public function setHttps(bool $https): void
 	{
 		$this->https = $https;
@@ -122,18 +111,12 @@ class Domain
 	}
 
 
-	/**
-	 * @return bool
-	 */
 	public function isWww(): bool
 	{
 		return $this->www;
 	}
 
 
-	/**
-	 * @param bool $www
-	 */
 	public function setWww(bool $www): void
 	{
 		$this->www = $www;
@@ -141,18 +124,12 @@ class Domain
 	}
 
 
-	/**
-	 * @return string
-	 */
 	public function getDomain(): string
 	{
 		return $this->domain;
 	}
 
 
-	/**
-	 * @param string $domain
-	 */
 	public function setDomain(string $domain): void
 	{
 		$this->domain = $domain;
@@ -160,9 +137,6 @@ class Domain
 	}
 
 
-	/**
-	 * @return string
-	 */
 	public function getLocale(): string
 	{
 		if ($this->locale === null) {
@@ -173,9 +147,6 @@ class Domain
 	}
 
 
-	/**
-	 * @param Locale $locale
-	 */
 	public function setLocale(Locale $locale): void
 	{
 		$this->locale = $locale;
@@ -183,18 +154,12 @@ class Domain
 	}
 
 
-	/**
-	 * @return bool
-	 */
 	public function isDefault(): bool
 	{
 		return $this->default;
 	}
 
 
-	/**
-	 * @param bool $default
-	 */
 	public function setDefault(bool $default): void
 	{
 		$this->default = $default;
@@ -202,18 +167,12 @@ class Domain
 	}
 
 
-	/**
-	 * @return string
-	 */
 	public function getEnvironment(): string
 	{
 		return $this->environment;
 	}
 
 
-	/**
-	 * @param string $environment
-	 */
 	public function setEnvironment(string $environment): void
 	{
 		$this->environment = $environment;
@@ -221,27 +180,18 @@ class Domain
 	}
 
 
-	/**
-	 * @return bool
-	 */
 	public function isLocalhost(): bool
 	{
 		return $this->environment === self::ENVIRONMENT_LOCALHOST;
 	}
 
 
-	/**
-	 * @return bool
-	 */
 	public function isBeta(): bool
 	{
 		return $this->environment === self::ENVIRONMENT_BETA;
 	}
 
 
-	/**
-	 * @return bool
-	 */
 	public function isProduction(): bool
 	{
 		return $this->environment === self::ENVIRONMENT_PRODUCTION;
@@ -294,18 +244,12 @@ class Domain
 	}
 
 
-	/**
-	 * @return bool
-	 */
 	public function isProtected(): bool
 	{
 		return $this->protected;
 	}
 
 
-	/**
-	 * @param bool $protected
-	 */
 	public function setProtected(bool $protected): void
 	{
 		$this->protected = $protected;
@@ -313,18 +257,12 @@ class Domain
 	}
 
 
-	/**
-	 * @return \DateTime
-	 */
 	public function getInsertedDate(): \DateTime
 	{
 		return $this->insertedDate;
 	}
 
 
-	/**
-	 * @return \DateTime
-	 */
 	public function getUpdatedDate(): \DateTime
 	{
 		return $this->updatedDate;

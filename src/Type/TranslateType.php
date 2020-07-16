@@ -60,19 +60,12 @@ class TranslateType extends Type
 	}
 
 
-	/**
-	 * @return string
-	 */
 	public function getName(): string
 	{
 		return self::TRANSLATE_TYPE;
 	}
 
 
-	/**
-	 * @param AbstractPlatform $platform
-	 * @return bool
-	 */
 	public function requiresSQLCommentHint(AbstractPlatform $platform): bool
 	{
 		return true;

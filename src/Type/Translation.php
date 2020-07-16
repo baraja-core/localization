@@ -109,11 +109,6 @@ class Translation
 	}
 
 
-	/**
-	 * @param string|null $haystack
-	 * @param string|null $language
-	 * @return bool
-	 */
 	public function addTranslate(?string $haystack, string $language = null): bool
 	{
 		if ($language === null) {

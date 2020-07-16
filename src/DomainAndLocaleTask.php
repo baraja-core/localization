@@ -234,9 +234,6 @@ class DomainAndLocaleTask extends BaseTask
 	}
 
 
-	/**
-	 * @param Domain $domain
-	 */
 	private function editDomain(Domain $domain): void
 	{
 		Helpers::terminalRenderError('Domain editing is not supported yet, please use graphical CMS.');

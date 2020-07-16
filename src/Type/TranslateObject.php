@@ -13,6 +13,7 @@ trait TranslateObject
 {
 	use SmartObject;
 
+
 	/**
 	 * ->getName(): Translation           load property only
 	 * ->setName('Jan'): void             set value in current language
@@ -79,10 +80,6 @@ trait TranslateObject
 	}
 
 
-	/**
-	 * @param string $haystack
-	 * @return string
-	 */
 	private function firstLower(string $haystack): string
 	{
 		return mb_strtolower($haystack[0] ?? '', 'UTF-8') . \substr($haystack, 1);

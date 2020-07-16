@@ -89,9 +89,6 @@ class Locale
 	private $siteName;
 
 
-	/**
-	 * @param string $locale
-	 */
 	public function __construct(string $locale)
 	{
 		$this->locale = strtolower(trim($locale));
@@ -100,72 +97,48 @@ class Locale
 	}
 
 
-	/**
-	 * @return string
-	 */
 	public function __toString(): string
 	{
 		return $this->getLocale();
 	}
 
 
-	/**
-	 * @return string
-	 */
 	public function getLocale(): string
 	{
 		return $this->locale;
 	}
 
 
-	/**
-	 * @return bool
-	 */
 	public function isActive(): bool
 	{
 		return $this->active;
 	}
 
 
-	/**
-	 * @param bool $active
-	 */
 	public function setActive(bool $active = true): void
 	{
 		$this->active = $active;
 	}
 
 
-	/**
-	 * @return bool
-	 */
 	public function isDefault(): bool
 	{
 		return $this->default;
 	}
 
 
-	/**
-	 * @param bool $default
-	 */
 	public function setDefault(bool $default): void
 	{
 		$this->default = $default;
 	}
 
 
-	/**
-	 * @return int
-	 */
 	public function getPosition(): int
 	{
 		return $this->position;
 	}
 
 
-	/**
-	 * @param int $position
-	 */
 	public function setPosition(int $position): void
 	{
 		if ($position < 0) {
@@ -180,81 +153,54 @@ class Locale
 	}
 
 
-	/**
-	 * @return \DateTime
-	 */
 	public function getInsertedDate(): \DateTime
 	{
 		return $this->insertedDate;
 	}
 
 
-	/**
-	 * @return string|null
-	 */
 	public function getTitleSuffix(): ?string
 	{
 		return $this->titleSuffix;
 	}
 
 
-	/**
-	 * @param string|null $titleSuffix
-	 */
 	public function setTitleSuffix(?string $titleSuffix): void
 	{
 		$this->titleSuffix = trim($titleSuffix ?? '') ?: null;
 	}
 
 
-	/**
-	 * @return string|null
-	 */
 	public function getTitleSeparator(): ?string
 	{
 		return $this->titleSeparator;
 	}
 
 
-	/**
-	 * @param string|null $titleSeparator
-	 */
 	public function setTitleSeparator(?string $titleSeparator): void
 	{
 		$this->titleSeparator = trim($titleSeparator ?? '') ?: null;
 	}
 
 
-	/**
-	 * @return string|null
-	 */
 	public function getTitleFormat(): ?string
 	{
 		return $this->titleFormat;
 	}
 
 
-	/**
-	 * @param string|null $titleFormat
-	 */
 	public function setTitleFormat(?string $titleFormat): void
 	{
 		$this->titleFormat = trim($titleFormat ?? '') ?: null;
 	}
 
 
-	/**
-	 * @return string|null
-	 */
 	public function getSiteName(): ?string
 	{
 		return $this->siteName;
 	}
 
 
-	/**
-	 * @param string|null $siteName
-	 */
 	public function setSiteName(?string $siteName): void
 	{
 		$this->siteName = trim($siteName ?? '') ?: null;
