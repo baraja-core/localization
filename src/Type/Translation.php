@@ -56,7 +56,11 @@ final class Translation
 			$this->startupState = $this->storage = $storageData;
 		} else {
 			if ($language === null) {
-				$language = LocalizationHelper::getLocale(true);
+				if (PHP_SAPI === 'cli') {
+					$language = LocalizationHelper::getLocalization()->getDefaultLocale();
+				} else {
+					$language = LocalizationHelper::getLocale(true);
+				}
 			}
 
 			$this->storage[$language] = $data;
