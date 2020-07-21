@@ -134,7 +134,7 @@ class Domain
 
 	public function setDomain(string $domain): void
 	{
-		if (!preg_match('/^(?:[-A-Za-z0-9]+\.)+[A-Za-z]{2,6}$/', $domain)) {
+		if ($domain !== 'localhost' && !preg_match('/^(?:[-A-Za-z0-9]+\.)+[A-Za-z]{2,6}$/', $domain)) {
 			throw new \InvalidArgumentException('Domain "' . $domain . '" is not in valid format.');
 		}
 		if (Strings::length($domain) > 255) {
