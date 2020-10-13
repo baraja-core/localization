@@ -4,10 +4,6 @@ services:
 extensions:
 	localization: Baraja\Localization\LocalizationExtension
 
-orm.annotations:
-	paths:
-		Baraja\Localization: %rootDir%/vendor/baraja-core/localization/src/Entity
-
 baraja.database:
 	types:
 		translate: Baraja\Localization\TranslateType
