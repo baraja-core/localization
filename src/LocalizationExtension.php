@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Baraja\Localization;
 
 
+use Baraja\Doctrine\DatabaseExtension;
 use Baraja\Doctrine\ORM\DI\OrmAnnotationsExtension;
 use Nette\DI\CompilerExtension;
 use Nette\DI\Definitions\ServiceDefinition;
@@ -26,12 +27,18 @@ final class LocalizationExtension extends CompilerExtension
 	public function beforeCompile(): void
 	{
 		OrmAnnotationsExtension::addAnnotationPath('Baraja\Localization', __DIR__ . '/Entity');
+		DatabaseExtension::addCustomType('translate', TranslateType::class);
+
+		$builder = $this->getContainerBuilder();
 
 		/** @var ServiceDefinition $localization */
-		$localization = $this->getContainerBuilder()->getDefinitionByType(Localization::class);
+		$localization = $builder->getDefinitionByType(Localization::class);
 
 		/** @var ServiceDefinition $httpRequest */
-		$httpRequest = $this->getContainerBuilder()->getDefinitionByType(Request::class);
+		$httpRequest = $builder->getDefinitionByType(Request::class);
+
+		$builder->addDefinition($this->prefix('localization'))
+			->setFactory(Localization::class);
 
 		$localization->addSetup(
 			'if (PHP_SAPI !== \'cli\') {' . "\n"
