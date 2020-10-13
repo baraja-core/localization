@@ -26,8 +26,6 @@ final class DomainAndLocaleTask extends BaseTask
 
 	/**
 	 * Create locales, validate and than create domain records.
-	 *
-	 * @return bool
 	 */
 	public function run(): bool
 	{
@@ -50,7 +48,6 @@ final class DomainAndLocaleTask extends BaseTask
 		} else {
 			$this->fixLocales();
 		}
-
 		if (PackageRegistrator::isConfigurationMode() === true || $this->renderLocaleTable($locales = $this->selectLocales()) === 0) {
 			while ($this->ask('Create new locale?', ['y', 'n']) === 'y') {
 				$this->createLocale();
@@ -61,7 +58,6 @@ final class DomainAndLocaleTask extends BaseTask
 			echo 'For change some values please enable the Configuration mode.';
 			echo "\n\n";
 		}
-
 		if (PackageRegistrator::isConfigurationMode() === true || $this->renderDomainTable() === 0) {
 			while ($this->ask('Create new domain?', ['y', 'n']) === 'y') {
 				$this->createDomain();
@@ -132,7 +128,6 @@ final class DomainAndLocaleTask extends BaseTask
 					break;
 				}
 			}
-
 			try {
 				/** @var Domain $domainEntity */
 				$domainEntity = $this->entityManager->getRepository(Domain::class)
@@ -196,9 +191,7 @@ final class DomainAndLocaleTask extends BaseTask
 				echo 'New password is: "' . ($password = Random::generate(16)) . '"' . "\n\n";
 			} else {
 				do {
-					$password = $this->ask('Please enter new password (5 characters is required):');
-
-					if ($password !== null && strlen($password) < 5) {
+					if (($password = $this->ask('Please enter new password (5 characters is required):')) !== null && strlen($password) < 5) {
 						Helpers::terminalRenderError('This is not good password. Please type again.');
 						$password = null;
 					}
@@ -298,8 +291,6 @@ final class DomainAndLocaleTask extends BaseTask
 
 	/**
 	 * Render current domain table and return count of domains.
-	 *
-	 * @return int
 	 */
 	private function renderDomainTable(): int
 	{
@@ -400,7 +391,6 @@ final class DomainAndLocaleTask extends BaseTask
 		if ($existDefault === false && $lastEntity !== null) {
 			$lastEntity->setDefault(true);
 		}
-
 		if ($duplicityPositions !== []) {
 			// Fix all positions will have unique number
 			foreach ($duplicityPositions as $duplicityPosition) {

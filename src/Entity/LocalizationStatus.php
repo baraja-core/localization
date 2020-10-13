@@ -56,7 +56,6 @@ final class LocalizationStatus
 
 	/**
 	 * @param string[] $availableLocales
-	 * @param string $defaultLocale
 	 * @param string[][] $fallbackLocales
 	 * @param string[]|null[] $localeToTitleSuffix
 	 * @param string[]|null[] $localeToTitleSeparator
@@ -98,9 +97,6 @@ final class LocalizationStatus
 	}
 
 
-	/**
-	 * @return string
-	 */
 	public function getDefaultLocale(): string
 	{
 		return $this->defaultLocale;

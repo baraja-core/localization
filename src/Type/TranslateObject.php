@@ -33,11 +33,9 @@ trait TranslateObject
 
 			return null;
 		}
-
 		if (preg_match('/^(?:get|is)([A-Z].*)$/', $name, $getter)) {
 			return $this->{$this->firstLower($getter[1])};
 		}
-
 		if (preg_match('/^set([A-Z].*)$/', $name, $setter)) {
 			$value = $args[0] ?? null;
 			/** @var Translation|null $translation */

@@ -41,10 +41,6 @@ final class Localization
 	private $status;
 
 
-	/**
-	 * @param EntityManager $entityManager
-	 * @param IStorage $storage
-	 */
 	public function __construct(EntityManager $entityManager, IStorage $storage)
 	{
 		$this->entityManager = $entityManager;
@@ -61,16 +57,12 @@ final class Localization
 	 * 3. Connected default locale to current domain
 	 *
 	 * If locale does not match, this logic throws exception.
-	 *
-	 * @param bool $fallbackToContextLocale
-	 * @return string
 	 */
 	public function getLocale(bool $fallbackToContextLocale = false): string
 	{
 		if (PHP_SAPI === 'cli') {
 			throw new \RuntimeException('Localization: Current locale is not available in CLI.');
 		}
-
 		if ($this->localeDomain === null) {
 			$this->localeDomain = $this->getStatus()->getDomainToLocale()[$this->currentDomain] ?? null;
 		}
@@ -83,7 +75,6 @@ final class Localization
 			}
 			$locale = $this->localeContext;
 		}
-
 		if ($locale === null) {
 			LocalizationException::canNotResolveLocale($this->localeDefined, $this->localeParameter, $this->localeDomain);
 		}
@@ -94,8 +85,6 @@ final class Localization
 
 	/**
 	 * @internal use for routing or other locale logic.
-	 * @param string $locale
-	 * @return Localization
 	 */
 	public function setLocale(string $locale): self
 	{
@@ -107,8 +96,6 @@ final class Localization
 
 	/**
 	 * @internal use for specific context cases, for example CMS manager.
-	 * @param string $contextLocale
-	 * @return Localization
 	 */
 	public function setContextLocale(string $contextLocale): self
 	{
@@ -122,8 +109,6 @@ final class Localization
 	 * Return Domain::ENVIRONMENT_* constant for current request.
 	 * If environment detection failed, method keep "production".
 	 * In case of CLI return "production".
-	 *
-	 * @return string
 	 */
 	public function getEnvironment(): string
 	{
@@ -177,7 +162,6 @@ final class Localization
 	 * Secondary detection (for multiple locales within a single domain) is GET ?locale parameter.
 	 *
 	 * @internal for DIC.
-	 * @param Request $request
 	 */
 	public function processHttpRequest(Request $request): void
 	{
@@ -206,15 +190,12 @@ final class Localization
 
 	/**
 	 * Create internal LocalizationStatus entity from cache.
-	 *
-	 * @return LocalizationStatus
 	 */
 	public function getStatus(): LocalizationStatus
 	{
 		if ($this->status !== null) {
 			return $this->status;
 		}
-
 		if (($config = $this->cache->load('configuration')) === null) {
 			$this->cache->save('configuration', $config = $this->createCache(), [
 				Cache::EXPIRE => '30 minutes',
@@ -241,8 +222,6 @@ final class Localization
 
 
 	/**
-	 * @param string $locale
-	 * @return Locale
 	 * @throws NoResultException|NonUniqueResultException
 	 */
 	public function getLocaleEntity(string $locale): Locale

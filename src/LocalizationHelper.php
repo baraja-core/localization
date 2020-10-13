@@ -22,8 +22,6 @@ final class LocalizationHelper
 	 * Get current locale if localization matched.
 	 *
 	 * @internal
-	 * @param bool $fallbackToContextLocale
-	 * @return string
 	 */
 	public static function getLocale(bool $fallbackToContextLocale = false): string
 	{
@@ -43,7 +41,6 @@ final class LocalizationHelper
 
 	/**
 	 * @internal
-	 * @return Localization
 	 */
 	public static function getLocalization(): Localization
 	{
@@ -57,7 +54,6 @@ final class LocalizationHelper
 
 	/**
 	 * @internal for DIC
-	 * @param Localization $localization
 	 */
 	public static function setLocalization(Localization $localization): void
 	{

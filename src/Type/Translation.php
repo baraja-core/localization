@@ -16,11 +16,9 @@ final class Translation
 
 
 	/**
-	 * @param string|null $data
-	 * @param string|null $language
 	 * @throws LocalizationException
 	 */
-	public function __construct(?string $data, string $language = null)
+	public function __construct(?string $data, ?string $language = null)
 	{
 		if ($data !== null && strncmp($data, 'T:{', 3) === 0) {
 			$json = (string) preg_replace(
@@ -35,11 +33,9 @@ final class Translation
 				if ($json === '') {
 					throw new LocalizationException('Syntax error:' . "\nJson: " . $json . "\n\nOriginal data:\n" . $data);
 				}
-
 				if (\defined('JSON_C_VERSION') && !preg_match('##u', $json)) {
 					throw new LocalizationException('Invalid UTF-8 sequence:' . "\n" . $data, 5);
 				}
-
 				if (\defined('JSON_C_VERSION') && PHP_INT_SIZE === 8) {
 					$flags &= ~JSON_BIGINT_AS_STRING; // not implemented in PECL JSON-C 1.3.2 for 64bit systems
 				}
@@ -76,25 +72,18 @@ final class Translation
 
 	/**
 	 * Return best translation. If language is null, use current language by automatic detection.
-	 *
-	 * @param string|null $language
-	 * @param bool $fallback
-	 * @return string|null
 	 */
-	public function getTranslation(string $language = null, bool $fallback = true): ?string
+	public function getTranslation(?string $language = null, bool $fallback = true): ?string
 	{
 		if ($language === null) {
 			$language = LocalizationHelper::getLocale(true);
 		}
-
 		if (\is_array($this->storage) === false) {
 			return '#INVALID_DATA#';
 		}
-
 		if (isset($this->storage[$language]) === true) {
 			return $this->storage[$language];
 		}
-
 		if ($fallback === true) {
 			if (isset(($fallbackLanguages = LocalizationHelper::getFallbackLocales())[$language]) === true) {
 				foreach ($fallbackLanguages[$language] as $fallbackLanguage) {
@@ -103,7 +92,6 @@ final class Translation
 					}
 				}
 			}
-
 			if (\is_array($this->storage) === true) {
 				return $this->storage[array_keys($this->storage)[0]];
 			}
@@ -113,12 +101,11 @@ final class Translation
 	}
 
 
-	public function addTranslate(?string $haystack, string $language = null): bool
+	public function addTranslate(?string $haystack, ?string $language = null): bool
 	{
 		if ($language === null) {
 			$language = LocalizationHelper::getLocale(true);
 		}
-
 		if (isset($this->storage[$language]) === true && $this->storage[$language] === $haystack) {
 			return false;
 		}
@@ -133,7 +120,6 @@ final class Translation
 	 * Serialize translate object to save in database.
 	 *
 	 * @internal
-	 * @return string
 	 */
 	public function getSerialize(): string
 	{
@@ -142,7 +128,6 @@ final class Translation
 			JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
 			| (\defined('JSON_PRESERVE_ZERO_FRACTION') ? JSON_PRESERVE_ZERO_FRACTION : 0)
 		);
-
 		if (PHP_VERSION_ID < 70100) {
 			$json = str_replace(["\xe2\x80\xa8", "\xe2\x80\xa9"], ['\u2028', '\u2029'], $json);
 		}
@@ -171,7 +156,6 @@ final class Translation
 
 	/**
 	 * @internal
-	 * @return Translation
 	 */
 	public function regenerate(): self
 	{

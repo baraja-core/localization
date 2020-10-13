@@ -43,9 +43,6 @@ final class LocalizationExtension extends CompilerExtension
 	}
 
 
-	/**
-	 * @param ClassType $class
-	 */
 	public function afterCompile(ClassType $class): void
 	{
 		if (PHP_SAPI === 'cli') {

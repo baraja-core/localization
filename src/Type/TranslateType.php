@@ -15,7 +15,6 @@ final class TranslateType extends Type
 
 	/**
 	 * @param mixed[] $fieldDeclaration
-	 * @param AbstractPlatform $platform
 	 * @return string
 	 */
 	public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform): string
@@ -26,7 +25,6 @@ final class TranslateType extends Type
 
 	/**
 	 * @param string $value
-	 * @param AbstractPlatform $platform
 	 * @return Translation
 	 * @throws LocalizationException
 	 */
@@ -38,7 +36,6 @@ final class TranslateType extends Type
 
 	/**
 	 * @param Translation|string|mixed|null $value
-	 * @param AbstractPlatform $platform
 	 * @return string|null
 	 * @throws LocalizationException
 	 */
@@ -47,11 +44,9 @@ final class TranslateType extends Type
 		if ($value === null) {
 			return null;
 		}
-
 		if ($value instanceof Translation) {
 			return $value->getSerialize();
 		}
-
 		if (\is_string($value) === true) {
 			return (new Translation($value))->getSerialize();
 		}

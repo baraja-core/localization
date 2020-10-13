@@ -217,8 +217,6 @@ class Domain
 
 	/**
 	 * Return as BCrypt hash.
-	 *
-	 * @return string|null
 	 */
 	public function getProtectedPassword(): ?string
 	{
@@ -228,8 +226,6 @@ class Domain
 
 	/**
 	 * If is string, please insert plaintext password.
-	 *
-	 * @param string|null $protectedPassword
 	 */
 	public function setProtectedPassword(?string $protectedPassword): void
 	{
@@ -247,9 +243,6 @@ class Domain
 
 	/**
 	 * Verify process for check password is ok by internal logic.
-	 *
-	 * @param string $password
-	 * @return bool
 	 */
 	public function isPasswordOk(string $password): bool
 	{
