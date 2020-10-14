@@ -29,24 +29,15 @@ final class LocalizationExtension extends CompilerExtension
 		OrmAnnotationsExtension::addAnnotationPath('Baraja\Localization', __DIR__ . '/Entity');
 		DatabaseExtension::addCustomType('translate', TranslateType::class);
 
-		$builder = $this->getContainerBuilder();
-
-		/** @var ServiceDefinition $localization */
-		$localization = $builder->getDefinitionByType(Localization::class);
-
-		/** @var ServiceDefinition $httpRequest */
-		$httpRequest = $builder->getDefinitionByType(Request::class);
-
-		$builder->addDefinition($this->prefix('localization'))
-			->setFactory(Localization::class);
-
-		$localization->addSetup(
-			'if (PHP_SAPI !== \'cli\') {' . "\n"
-			. "\t" . '$service->processHttpRequest($this->getService(?));' . "\n"
-			. '}' . "\n"
-			. LocalizationHelper::class . '::setLocalization($service)',
-			[$httpRequest->getName()]
-		);
+		$this->getContainerBuilder()->addDefinition($this->prefix('localization'))
+			->setFactory(Localization::class)
+			->addSetup(
+				'if (PHP_SAPI !== \'cli\') {' . "\n"
+				. "\t" . '$service->processHttpRequest(?);' . "\n"
+				. '}' . "\n"
+				. LocalizationHelper::class . '::setLocalization($service)',
+				['@' . Request::class]
+			);
 	}
 
 
