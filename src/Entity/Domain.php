@@ -26,24 +26,16 @@ class Domain
 
 	public const ENVIRONMENT_PRODUCTION = 'production';
 
-	/**
-	 * @ORM\Column(type="boolean")
-	 */
+	/** @ORM\Column(type="boolean") */
 	private bool $https = false;
 
-	/**
-	 * @ORM\Column(type="string", unique=true)
-	 */
+	/** @ORM\Column(type="string", unique=true) */
 	private string $domain;
 
-	/**
-	 * @ORM\Column(type="boolean", name="`is_www`")
-	 */
+	/** @ORM\Column(type="boolean", name="`is_www`") */
 	private bool $www = false;
 
-	/**
-	 * @ORM\ManyToOne(targetEntity="\Baraja\Localization\Locale", inversedBy="domains")
-	 */
+	/** @ORM\ManyToOne(targetEntity="\Baraja\Localization\Locale", inversedBy="domains") */
 	private ?Locale $locale;
 
 	/**
@@ -54,29 +46,19 @@ class Domain
 	 */
 	private string $environment;
 
-	/**
-	 * @ORM\Column(type="boolean", name="`is_default`")
-	 */
+	/** @ORM\Column(type="boolean", name="`is_default`") */
 	private bool $default = false;
 
-	/**
-	 * @ORM\Column(type="string", nullable=true)
-	 */
+	/** @ORM\Column(type="string", nullable=true) */
 	private ?string $protectedPassword;
 
-	/**
-	 * @ORM\Column(type="boolean", name="`is_protected`")
-	 */
+	/** @ORM\Column(type="boolean", name="`is_protected`") */
 	private bool $protected = true;
 
-	/**
-	 * @ORM\Column(type="datetime")
-	 */
+	/** @ORM\Column(type="datetime") */
 	private \DateTime $insertedDate;
 
-	/**
-	 * @ORM\Column(type="datetime")
-	 */
+	/** @ORM\Column(type="datetime") */
 	private \DateTime $updatedDate;
 
 

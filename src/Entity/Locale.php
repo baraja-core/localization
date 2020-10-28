@@ -29,29 +29,19 @@ class Locale
 	use UuidIdentifier;
 	use SmartObject;
 
-	/**
-	 * @ORM\Column(type="string", unique=true, length=2)
-	 */
+	/** @ORM\Column(type="string", unique=true, length=2) */
 	private string $locale;
 
-	/**
-	 * @ORM\Column(type="boolean")
-	 */
+	/** @ORM\Column(type="boolean") */
 	private bool $active = true;
 
-	/**
-	 * @ORM\Column(type="boolean", name="`is_default`")
-	 */
+	/** @ORM\Column(type="boolean", name="`is_default`") */
 	private bool $default = false;
 
-	/**
-	 * @ORM\Column(type="smallint")
-	 */
+	/** @ORM\Column(type="smallint") */
 	private int $position = 1;
 
-	/**
-	 * @ORM\Column(type="datetime")
-	 */
+	/** @ORM\Column(type="datetime") */
 	private \DateTime $insertedDate;
 
 	/**
@@ -60,24 +50,16 @@ class Locale
 	 */
 	private $domains;
 
-	/**
-	 * @ORM\Column(type="string", length=64, nullable=true)
-	 */
+	/** @ORM\Column(type="string", length=64, nullable=true) */
 	private ?string $titleSuffix;
 
-	/**
-	 * @ORM\Column(type="string", length=8, nullable=true)
-	 */
+	/** @ORM\Column(type="string", length=8, nullable=true) */
 	private ?string $titleSeparator;
 
-	/**
-	 * @ORM\Column(type="string", length=64, nullable=true)
-	 */
+	/** @ORM\Column(type="string", length=64, nullable=true) */
 	private ?string $titleFormat;
 
-	/**
-	 * @ORM\Column(type="string", length=64, nullable=true)
-	 */
+	/** @ORM\Column(type="string", length=64, nullable=true) */
 	private ?string $siteName;
 
 
