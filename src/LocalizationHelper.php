@@ -13,9 +13,7 @@ namespace Baraja\Localization;
  */
 final class LocalizationHelper
 {
-
-	/** @var Localization|null */
-	private static $localization;
+	private static ?Localization $localization;
 
 
 	/**
@@ -30,8 +28,8 @@ final class LocalizationHelper
 
 
 	/**
-	 * @internal
 	 * @return string[][]
+	 * @internal
 	 */
 	public static function getFallbackLocales(): array
 	{

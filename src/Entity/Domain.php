@@ -27,67 +27,57 @@ class Domain
 	public const ENVIRONMENT_PRODUCTION = 'production';
 
 	/**
-	 * @var bool
 	 * @ORM\Column(type="boolean")
 	 */
-	private $https = false;
+	private bool $https = false;
 
 	/**
-	 * @var string
 	 * @ORM\Column(type="string", unique=true)
 	 */
-	private $domain;
+	private string $domain;
 
 	/**
-	 * @var bool
 	 * @ORM\Column(type="boolean", name="`is_www`")
 	 */
-	private $www = false;
+	private bool $www = false;
 
 	/**
-	 * @var Locale|null
 	 * @ORM\ManyToOne(targetEntity="\Baraja\Localization\Locale", inversedBy="domains")
 	 */
-	private $locale;
+	private ?Locale $locale;
 
 	/**
 	 * Value is constant of Domain::ENVIRONMENT_*
 	 * Possible values: "localhost", "beta", "production".
 	 *
-	 * @var string
 	 * @ORM\Column(type="string", length=10)
 	 */
-	private $environment;
+	private string $environment;
 
 	/**
-	 * @var bool
 	 * @ORM\Column(type="boolean", name="`is_default`")
 	 */
-	private $default = false;
+	private bool $default = false;
 
 	/**
-	 * @var string|null
 	 * @ORM\Column(type="string", nullable=true)
 	 */
-	private $protectedPassword;
+	private ?string $protectedPassword;
 
 	/**
-	 * @var bool
 	 * @ORM\Column(type="boolean", name="`is_protected`")
 	 */
-	private $protected = true;
+	private bool $protected = true;
 
 	/**
-	 * @var \DateTime
 	 * @ORM\Column(type="datetime")
 	 */
-	private $insertedDate;
+	private \DateTime $insertedDate;
 
 	/**
-	 * @var \DateTime
 	 * @ORM\Column(type="datetime")
 	 */
-	private $updatedDate;
+	private \DateTime $updatedDate;
 
 
 	public function __construct(string $domain, Locale $locale, string $environment = self::ENVIRONMENT_BETA)

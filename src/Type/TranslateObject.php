@@ -18,7 +18,6 @@ trait TranslateObject
 	 * ->setName('Jan'): void             set value in current language
 	 * ->setName('Honza', 'cs'): void     set value in specific language
 	 *
-	 * @param string $name
 	 * @param string[] $args
 	 * @return string|null
 	 */

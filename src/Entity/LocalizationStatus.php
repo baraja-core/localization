@@ -12,46 +12,45 @@ final class LocalizationStatus
 	use SmartObject;
 
 	/** @var string[] */
-	private $availableLocales;
+	private array $availableLocales;
 
-	/** @var string */
-	private $defaultLocale;
-
-	/** @var string[][] */
-	private $fallbackLocales;
-
-	/** @var string[]|null[] */
-	private $localeToTitleSuffix;
-
-	/** @var string[]|null[] */
-	private $localeToTitleSeparator;
-
-	/** @var string[]|null[] */
-	private $localeToTitleFormat;
-
-	/** @var string[]|null[] */
-	private $localeToSiteName;
-
-	/** @var string[] */
-	private $domainToLocale;
-
-	/** @var string[] */
-	private $domainToEnvironment;
-
-	/** @var bool[] */
-	private $domainToProtected;
-
-	/** @var string[] */
-	private $domainToScheme;
-
-	/** @var bool[] */
-	private $domainToUseWww;
+	private string $defaultLocale;
 
 	/** @var string[][] */
-	private $domainByEnvironment;
+	private array $fallbackLocales;
+
+	/** @var string[]|null[] */
+	private array $localeToTitleSuffix;
+
+	/** @var string[]|null[] */
+	private array $localeToTitleSeparator;
+
+	/** @var string[]|null[] */
+	private array $localeToTitleFormat;
+
+	/** @var string[]|null[] */
+	private array $localeToSiteName;
+
+	/** @var string[] */
+	private array $domainToLocale;
+
+	/** @var string[] */
+	private array $domainToEnvironment;
+
+	/** @var bool[] */
+	private array $domainToProtected;
+
+	/** @var string[] */
+	private array $domainToScheme;
+
+	/** @var bool[] */
+	private array $domainToUseWww;
+
+	/** @var string[][] */
+	private array $domainByEnvironment;
 
 	/** @var mixed[][]|mixed[][][] */
-	private $domains;
+	private array $domains;
 
 
 	/**

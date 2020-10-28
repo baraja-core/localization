@@ -19,9 +19,7 @@ use Nette\Utils\Random;
  */
 final class DomainAndLocaleTask extends BaseTask
 {
-
-	/** @var EntityManager */
-	private $entityManager;
+	private EntityManager $entityManager;
 
 
 	/**
@@ -38,7 +36,9 @@ final class DomainAndLocaleTask extends BaseTask
 		} catch (\Exception $e) {
 		}
 
-		$this->entityManager = $this->getContainer()->getByType(EntityManager::class);
+		/** @var EntityManager $em */
+		$em = $this->getContainer()->getByType(EntityManager::class);
+		$this->entityManager = $em;
 		echo 'Locales:' . "\n\n";
 
 		if (($locales = $this->selectLocales()) === []) {

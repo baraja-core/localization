@@ -15,30 +15,21 @@ use Nette\Http\Request;
 
 final class Localization
 {
+	private EntityManager $entityManager;
 
-	/** @var EntityManager */
-	private $entityManager;
+	private Cache $cache;
 
-	/** @var Cache */
-	private $cache;
+	private ?string $localeDomain = null;
 
-	/** @var string|null */
-	private $localeDomain;
+	private ?string $localeParameter = null;
 
-	/** @var string|null */
-	private $localeParameter;
+	private ?string $localeDefined = null;
 
-	/** @var string|null */
-	private $localeDefined;
+	private ?string $localeContext = null;
 
-	/** @var string|null */
-	private $localeContext;
+	private ?string $currentDomain = null;
 
-	/** @var string|null */
-	private $currentDomain;
-
-	/** @var LocalizationStatus|null */
-	private $status;
+	private ?LocalizationStatus $status = null;
 
 
 	public function __construct(EntityManager $entityManager, IStorage $storage)

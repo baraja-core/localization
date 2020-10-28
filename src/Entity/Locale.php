@@ -30,34 +30,29 @@ class Locale
 	use SmartObject;
 
 	/**
-	 * @var string
 	 * @ORM\Column(type="string", unique=true, length=2)
 	 */
-	private $locale;
+	private string $locale;
 
 	/**
-	 * @var bool
 	 * @ORM\Column(type="boolean")
 	 */
-	private $active = true;
+	private bool $active = true;
 
 	/**
-	 * @var bool
 	 * @ORM\Column(type="boolean", name="`is_default`")
 	 */
-	private $default = false;
+	private bool $default = false;
 
 	/**
-	 * @var int
 	 * @ORM\Column(type="smallint")
 	 */
-	private $position = 1;
+	private int $position = 1;
 
 	/**
-	 * @var \DateTime
 	 * @ORM\Column(type="datetime")
 	 */
-	private $insertedDate;
+	private \DateTime $insertedDate;
 
 	/**
 	 * @var Domain[]|Collection
@@ -66,28 +61,24 @@ class Locale
 	private $domains;
 
 	/**
-	 * @var string|null
 	 * @ORM\Column(type="string", length=64, nullable=true)
 	 */
-	private $titleSuffix;
+	private ?string $titleSuffix;
 
 	/**
-	 * @var string|null
 	 * @ORM\Column(type="string", length=8, nullable=true)
 	 */
-	private $titleSeparator;
+	private ?string $titleSeparator;
 
 	/**
-	 * @var string|null
 	 * @ORM\Column(type="string", length=64, nullable=true)
 	 */
-	private $titleFormat;
+	private ?string $titleFormat;
 
 	/**
-	 * @var string|null
 	 * @ORM\Column(type="string", length=64, nullable=true)
 	 */
-	private $siteName;
+	private ?string $siteName;
 
 
 	public function __construct(string $locale)

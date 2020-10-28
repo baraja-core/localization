@@ -9,10 +9,10 @@ final class Translation
 {
 
 	/** @var string[]|null */
-	private $storage;
+	private ?array $storage;
 
 	/** @var string[]|null */
-	private $startupState;
+	private ?array $startupState;
 
 
 	/**
