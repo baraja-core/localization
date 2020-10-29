@@ -38,7 +38,11 @@ trait TranslateObject
 		if (preg_match('/^set([A-Z].*)$/', $name, $setter)) {
 			$value = $args[0] ?? null;
 			/** @var Translation|null $translation */
-			if (($translation = $this->{$propertyName = $this->firstLower($setter[1])}) === null) {
+			$ref = new \ReflectionProperty($this, $propertyName = $this->firstLower($setter[1]));
+			$ref->setAccessible(true);
+			if ($ref->isInitialized($this) === false) { // PHP 7.4 support for new entity
+				$translation = new Translation($value, $args[1] ?? null);
+			} elseif (($translation = $this->{$propertyName}) === null) {
 				$translation = new Translation($value, $args[1] ?? null);
 			} elseif ($translation->addTranslate($value, $args[1] ?? null) === true) {
 				$translation = $translation->regenerate();
