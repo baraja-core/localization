@@ -93,14 +93,14 @@ final class DomainAndLocaleTask extends BaseTask
 		} while (true);
 
 		$entity = new Locale($locale);
-		$this->entityManager->persist($entity)->flush($entity);
+		$this->entityManager->persist($entity)->flush();
 
 		/** @var Locale[] $allLocales */
 		$allLocales = $this->entityManager->getRepository(Locale::class)->findAll();
 
 		if (\count($allLocales) === 1) {
 			$entity->setDefault(true);
-			$this->entityManager->flush($entity);
+			$this->entityManager->flush();
 		} elseif ($this->ask('Mark "' . $entity->getLocale() . '" as default?', ['y', 'n']) === 'y') {
 			foreach ($allLocales as $currentLocale) {
 				$currentLocale->setDefault($currentLocale->getLocale() === $entity->getLocale());
@@ -181,7 +181,7 @@ final class DomainAndLocaleTask extends BaseTask
 		];
 
 		$entity = new Domain($domain, $localeCodeToEntity[$localeCode ?? $defaultLocale], $environments[$environment] ?? Domain::ENVIRONMENT_BETA);
-		$this->entityManager->persist($entity)->flush($entity);
+		$this->entityManager->persist($entity)->flush();
 		$entity->setHttps($this->ask('Use https for "' . $domain . '"?', ['y', 'n']) === 'y');
 		$entity->setWww($this->ask('Use www prefix for "' . $domain . '"?', ['y', 'n']) === 'y');
 
@@ -202,7 +202,7 @@ final class DomainAndLocaleTask extends BaseTask
 			$entity->setProtected(false);
 		}
 
-		$this->entityManager->flush($entity);
+		$this->entityManager->flush();
 
 		if ($this->ask('Is "' . $domain . '" default domain for "' . $entity->getEnvironment() . '" and "' . $entity->getLocale() . '"?', ['y', 'n']) === 'y') {
 			/** @var Domain[] $domainsInEnvironmentAndLocale */
@@ -223,7 +223,7 @@ final class DomainAndLocaleTask extends BaseTask
 			}
 		}
 
-		$this->entityManager->flush($entity);
+		$this->entityManager->flush();
 	}
 
 
@@ -454,6 +454,6 @@ final class DomainAndLocaleTask extends BaseTask
 		$domain->setProtected(false);
 		$domain->setDefault(true);
 
-		$this->entityManager->persist($domain)->flush($domain);
+		$this->entityManager->persist($domain)->flush();
 	}
 }
