@@ -203,6 +203,7 @@ class Domain
 	{
 		if ($protectedPassword !== null) {
 			if (($hash = @password_hash($protectedPassword, PASSWORD_DEFAULT, [])) === false) { // @ is escalated to exception
+				/* @phpstan-ignore-next-line */
 				throw new \RuntimeException('Computed hash is invalid. ' . error_get_last()['message'] ?? '');
 			}
 			$protectedPassword = (string) $hash;
