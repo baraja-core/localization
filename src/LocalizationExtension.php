@@ -26,10 +26,12 @@ final class LocalizationExtension extends CompilerExtension
 
 	public function beforeCompile(): void
 	{
-		OrmAnnotationsExtension::addAnnotationPath('Baraja\Localization', __DIR__ . '/Entity');
+		$builder = $this->getContainerBuilder();
+
+		OrmAnnotationsExtension::addAnnotationPathToManager($builder, 'Baraja\Localization', __DIR__ . '/Entity');
 		DatabaseExtension::addCustomType('translate', TranslateType::class);
 
-		$this->getContainerBuilder()->addDefinition($this->prefix('localization'))
+		$builder->addDefinition($this->prefix('localization'))
 			->setFactory(Localization::class)
 			->addSetup(
 				'if (PHP_SAPI !== \'cli\') {' . "\n"
