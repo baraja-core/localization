@@ -67,7 +67,13 @@ final class Localization
 			$locale = $this->localeContext;
 		}
 		if ($locale === null) {
-			LocalizationException::canNotResolveLocale($this->localeDefined, $this->localeParameter, $this->localeDomain);
+			throw new LocalizationException(
+				'Can not resolve current locale. Explored inputs:' . "\n"
+				. 'Defined: "' . ($this->localeDefined ?? 'null') . '", '
+				. 'URL parameter: "' . ($this->localeParameter ?? 'null') . '", '
+				. 'domain: "' . ($this->localeDomain ?? 'null') . '".' . "\n"
+				. 'Did you defined default locale for all domains or use router rewriting?'
+			);
 		}
 
 		return $locale;
@@ -161,7 +167,8 @@ final class Localization
 		}
 
 		$url = $request->getUrl();
-		if (\is_string($localeParameter = $url->getQueryParameter('locale')) === true) {
+		$localeParameter = $url->getQueryParameter('locale');
+		if (\is_string($localeParameter) === true) {
 			$this->localeParameter = $localeParameter;
 		}
 		$this->currentDomain = str_replace('www.', '', $url->getDomain(4));

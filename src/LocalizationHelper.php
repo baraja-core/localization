@@ -13,7 +13,7 @@ namespace Baraja\Localization;
  */
 final class LocalizationHelper
 {
-	private static ?Localization $localization;
+	private static ?Localization $localization = null;
 
 
 	/**

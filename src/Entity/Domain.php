@@ -218,11 +218,15 @@ class Domain
 	 */
 	public function isPasswordOk(string $password): bool
 	{
-		if (($is = password_verify($password, $this->protectedPassword ?? '')) === true && password_needs_rehash($this->protectedPassword, PASSWORD_DEFAULT, []) === true) {
-			$this->setProtectedPassword($password);
+		if (password_verify($password, $this->protectedPassword ?? '') === true) {
+			if (password_needs_rehash($this->protectedPassword ?? '', PASSWORD_DEFAULT, []) === true) {
+				$this->setProtectedPassword($password);
+			}
+
+			return true;
 		}
 
-		return $is;
+		return false;
 	}
 
 

@@ -7,16 +7,6 @@ namespace Baraja\Localization;
 
 final class LocalizationException extends \RuntimeException
 {
-	public static function canNotResolveLocale(?string $defined, ?string $parameter, ?string $domain): void
-	{
-		throw new self(
-			'Can not resolve current locale. Explored inputs:' . "\n"
-			. 'Defined: "' . ($defined ?? 'null') . '", URL parameter: "' . ($parameter ?? 'null') . '", domain: "' . ($domain ?? 'null') . '".' . "\n"
-			. 'Did you defined default locale for all domains or use router rewriting?'
-		);
-	}
-
-
 	public static function contextLocaleIsEmpty(?string $currentLocale): void
 	{
 		throw new self(

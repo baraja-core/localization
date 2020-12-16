@@ -9,10 +9,10 @@ final class Translation
 {
 
 	/** @var string[]|null */
-	private ?array $storage;
+	private ?array $storage = null;
 
 	/** @var string[]|null */
-	private ?array $startupState;
+	private ?array $startupState = null;
 
 
 	/**
@@ -123,16 +123,11 @@ final class Translation
 	 */
 	public function getSerialize(): string
 	{
-		$json = json_encode(
-			$this->storage,
-			JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
-			| (\defined('JSON_PRESERVE_ZERO_FRACTION') ? JSON_PRESERVE_ZERO_FRACTION : 0)
-		);
-		if (PHP_VERSION_ID < 70100) {
-			$json = str_replace(["\xe2\x80\xa8", "\xe2\x80\xa9"], ['\u2028', '\u2029'], $json);
-		}
-
-		return 'T:' . $json;
+		return 'T:' . json_encode(
+				$this->storage,
+				JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
+				| (\defined('JSON_PRESERVE_ZERO_FRACTION') ? JSON_PRESERVE_ZERO_FRACTION : 0)
+			);
 	}
 
 
