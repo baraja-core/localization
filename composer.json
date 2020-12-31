@@ -15,7 +15,7 @@
 		"nette/caching": "^3.0",
 		"nette/http": "^3.0",
 		"baraja-core/doctrine": "^2.4",
-		"baraja-core/package-manager": "^2.4"
+		"baraja-core/package-manager": "^2.5"
 	},
 	"require-dev": {
 		"symplify/easy-coding-standard": "^7.2",
@@ -26,6 +26,9 @@
 	"autoload": {
 		"classmap": [
 			"src/"
+		],
+		"files": [
+			"src/task_autoload.php"
 		]
 	},
 	"scripts": {
