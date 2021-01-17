@@ -171,7 +171,7 @@ final class DomainAndLocaleTask extends BaseTask
 			$localeCodeToEntity[$locale->getLocale()] = $locale;
 		}
 
-		/* @phpstan-ignore-next-line */
+		/** @phpstan-ignore-next-line */
 		$localeCode = $this->ask('What is locale? Keep empty for "' . $defaultLocale . '":', array_merge(array_keys($localeCodeToEntity), [null]));
 
 		$environment = $this->ask('What is domain environment? "l" = localhost, "b" = beta, "p" = production', ['l', 'b', 'p']);
