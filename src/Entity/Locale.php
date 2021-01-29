@@ -122,8 +122,8 @@ class Locale
 		if ($position < 0) {
 			$position = 0;
 		}
-		if ($position > 32767) {
-			$position = 32767;
+		if ($position > 32_767) {
+			$position = 32_767;
 		}
 
 		$this->position = $position;
@@ -197,5 +197,14 @@ class Locale
 		}
 
 		$this->siteName = trim($siteName ?? '') ?: null;
+	}
+
+
+	/**
+	 * @return Domain[]|Collection
+	 */
+	public function getDomains()
+	{
+		return $this->domains;
 	}
 }

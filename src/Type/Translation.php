@@ -32,7 +32,7 @@ final class Translation
 			);
 			$flags = JSON_BIGINT_AS_STRING;
 
-			if (PHP_VERSION_ID < 70000) {
+			if (PHP_VERSION_ID < 70_000) {
 				if ($json === '') {
 					throw new LocalizationException('Syntax error:' . "\nJson: " . $json . "\n\nOriginal data:\n" . $data);
 				}
