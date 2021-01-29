@@ -14,7 +14,6 @@ use Nette\PhpGenerator\ClassType;
 
 final class LocalizationExtension extends CompilerExtension
 {
-
 	/**
 	 * @return string[]
 	 */
@@ -38,7 +37,7 @@ final class LocalizationExtension extends CompilerExtension
 				. "\t" . '$service->processHttpRequest(?);' . "\n"
 				. '}' . "\n"
 				. LocalizationHelper::class . '::setLocalization($service)',
-				['@' . Request::class]
+				['@' . Request::class],
 			);
 	}
 
@@ -56,7 +55,8 @@ final class LocalizationExtension extends CompilerExtension
 			'// localization.' . "\n"
 			. '(function () {' . "\n"
 			. "\t" . '$this->getService(?);' . "\n"
-			. '})();', [$localization->getName()]
+			. '})();',
+			[$localization->getName()],
 		);
 	}
 }

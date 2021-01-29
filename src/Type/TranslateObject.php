@@ -23,7 +23,10 @@ trait TranslateObject
 	 */
 	public function __call(string $name, array $args)
 	{
-		if (property_exists($this, $name) && ObjectHelpers::hasProperty($class = \get_class($this), $name) === 'event') {
+		if (
+			property_exists($this, $name)
+			&& ObjectHelpers::hasProperty($class = static::class, $name) === 'event'
+		) {
 			if (is_iterable($this->$name)) {
 				foreach ($this->$name as $handler) {
 					$handler(...$args);
@@ -55,8 +58,8 @@ trait TranslateObject
 			if ($recursion === true) {
 				$recursion = false;
 				throw new MemberAccessException(
-					'Call to undefined method ' . \get_class($this) . '::' . $name . '()'
-					. (property_exists($this, $name) ? ', did you mean property $' . $name . '?' : '')
+					'Call to undefined method ' . static::class . '::' . $name . '()'
+					. (property_exists($this, $name) ? ', did you mean property $' . $name . '?' : ''),
 				);
 			}
 

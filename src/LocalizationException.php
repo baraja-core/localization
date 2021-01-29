@@ -11,7 +11,7 @@ final class LocalizationException extends \RuntimeException
 	{
 		throw new self(
 			'Context locale is empty.'
-			. ($currentLocale !== null ? ' Did you mean current locale "' . $currentLocale . '"?' : '')
+			. ($currentLocale !== null ? ' Did you mean current locale "' . $currentLocale . '"?' : ''),
 		);
 	}
 
@@ -20,7 +20,7 @@ final class LocalizationException extends \RuntimeException
 	{
 		throw new self(
 			'Localization database tables does not exist. Please create tables and insert default configuration first.' . "\n"
-			. 'To solve this issue: Please create tables ("core__localization_domain" and "core__localization_locale") with default data.'
+			. 'To solve this issue: Please create tables ("core__localization_domain" and "core__localization_locale") with default data.',
 		);
 	}
 
@@ -28,7 +28,7 @@ final class LocalizationException extends \RuntimeException
 	public static function domainListIsEmpty(): void
 	{
 		throw new self(
-			'Domain list is empty. Please define project domains to table "core__localization_domain".'
+			'Domain list is empty. Please define project domains to table "core__localization_domain".',
 		);
 	}
 }

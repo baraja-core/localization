@@ -72,7 +72,7 @@ final class Localization
 				. 'Defined: "' . ($this->localeDefined ?? 'null') . '", '
 				. 'URL parameter: "' . ($this->localeParameter ?? 'null') . '", '
 				. 'domain: "' . ($this->localeDomain ?? 'null') . '".' . "\n"
-				. 'Did you defined default locale for all domains or use router rewriting?'
+				. 'Did you defined default locale for all domains or use router rewriting?',
 			);
 		}
 
@@ -214,7 +214,7 @@ final class Localization
 			$config['domainToScheme'],
 			$config['domainToUseWww'],
 			$config['domainByEnvironment'],
-			$config['domains']
+			$config['domains'],
 		);
 	}
 

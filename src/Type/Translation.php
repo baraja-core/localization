@@ -22,10 +22,13 @@ final class Translation
 	{
 		if ($data !== null && strncmp($data, 'T:{', 3) === 0) {
 			$json = (string) preg_replace(
-				'/^T:/', '',
-				str_replace("\n", '\n',
-					str_replace(["\r\n", "\r"], "\n", $data)
-				)
+				'/^T:/',
+				'',
+				str_replace(
+					"\n",
+					'\n',
+					str_replace(["\r\n", "\r"], "\n", $data),
+				),
 			);
 			$flags = JSON_BIGINT_AS_STRING;
 
@@ -45,7 +48,7 @@ final class Translation
 			if ($error = json_last_error()) {
 				throw new LocalizationException(
 					json_last_error_msg() . "\nJson: " . $json . "\n\nOriginal data:\n" . $data,
-					$error
+					$error,
 				);
 			}
 
@@ -124,10 +127,10 @@ final class Translation
 	public function getSerialize(): string
 	{
 		return 'T:' . json_encode(
-				$this->storage,
-				JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
-				| (\defined('JSON_PRESERVE_ZERO_FRACTION') ? JSON_PRESERVE_ZERO_FRACTION : 0)
-			);
+			$this->storage,
+			JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
+				| (\defined('JSON_PRESERVE_ZERO_FRACTION') ? JSON_PRESERVE_ZERO_FRACTION : 0),
+		);
 	}
 
 

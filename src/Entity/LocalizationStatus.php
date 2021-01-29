@@ -68,8 +68,22 @@ final class LocalizationStatus
 	 * @param string[][] $domainByEnvironment
 	 * @param mixed[][]|mixed[][][] $domains
 	 */
-	public function __construct(array $availableLocales, string $defaultLocale, array $fallbackLocales, array $localeToTitleSuffix, array $localeToTitleSeparator, array $localeToTitleFormat, array $localeToSiteName, array $domainToLocale, array $domainToEnvironment, array $domainToProtected, array $domainToScheme, array $domainToUseWww, array $domainByEnvironment, array $domains)
-	{
+	public function __construct(
+		array $availableLocales,
+		string $defaultLocale,
+		array $fallbackLocales,
+		array $localeToTitleSuffix,
+		array $localeToTitleSeparator,
+		array $localeToTitleFormat,
+		array $localeToSiteName,
+		array $domainToLocale,
+		array $domainToEnvironment,
+		array $domainToProtected,
+		array $domainToScheme,
+		array $domainToUseWww,
+		array $domainByEnvironment,
+		array $domains
+	) {
 		$this->availableLocales = $availableLocales;
 		$this->defaultLocale = $defaultLocale;
 		$this->fallbackLocales = $fallbackLocales;

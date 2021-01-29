@@ -48,7 +48,10 @@ final class DomainAndLocaleTask extends BaseTask
 		} else {
 			$this->fixLocales();
 		}
-		if (PackageRegistrator::isConfigurationMode() === true || $this->renderLocaleTable($locales = $this->selectLocales()) === 0) {
+		if (
+			PackageRegistrator::isConfigurationMode() === true
+			|| $this->renderLocaleTable($locales = $this->selectLocales()) === 0
+		) {
 			while ($this->ask('Create new locale?', ['y', 'n']) === 'y') {
 				$this->createLocale();
 				$this->renderLocaleTable($locales = $this->selectLocales());
@@ -152,7 +155,7 @@ final class DomainAndLocaleTask extends BaseTask
 			}
 		}
 
-		$domain = $domain ?? 'localhost';
+		$domain ??= 'localhost';
 		echo 'Creating "' . $domain . '"...' . "\n\n";
 
 		/** @var Locale[] $locales */
@@ -192,7 +195,10 @@ final class DomainAndLocaleTask extends BaseTask
 				echo 'New password is: "' . ($password = Random::generate(16)) . '"' . "\n\n";
 			} else {
 				do {
-					if (($password = $this->ask('Please enter new password (5 characters is required):')) !== null && strlen($password) < 5) {
+					if (
+						($password = $this->ask('Please enter new password (5 characters is required):')) !== null
+						&& strlen($password) < 5
+					) {
 						Helpers::terminalRenderError('This is not good password. Please type again.');
 						$password = null;
 					}
@@ -318,7 +324,7 @@ final class DomainAndLocaleTask extends BaseTask
 			if (isset($domain['locale']['locale']) === false) {
 				throw new \RuntimeException(
 					'Database record for domain "' . $domain['domain'] . '" (' . $domain['id'] . ') is broken.'
-					. "\n" . 'Please fix column "locale_id" in table "core__localization_domain" manually and run this task again.'
+					. "\n" . 'Please fix column "locale_id" in table "core__localization_domain" manually and run this task again.',
 				);
 			}
 

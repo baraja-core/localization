@@ -9,5 +9,5 @@ if (PHP_SAPI !== 'cli' || class_exists(\Baraja\PackageManager\Composer\TaskManag
 }
 
 \Baraja\PackageManager\Composer\TaskManager::get()->addTask(
-	new \Baraja\Localization\DomainAndLocaleTask(\Baraja\PackageManager\PackageRegistrator::get())
+	new \Baraja\Localization\DomainAndLocaleTask(\Baraja\PackageManager\PackageRegistrator::get()),
 );
