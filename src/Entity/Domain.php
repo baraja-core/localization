@@ -202,11 +202,15 @@ class Domain
 	public function setProtectedPassword(?string $protectedPassword): void
 	{
 		if ($protectedPassword !== null) {
-			if (($hash = @password_hash($protectedPassword, PASSWORD_DEFAULT, [])) === false) { // @ is escalated to exception
+			$hash = (string) @password_hash($protectedPassword, PASSWORD_DEFAULT, []); // @ is escalated to exception
+			if ($hash === '') {
 				/** @phpstan-ignore-next-line */
-				throw new \RuntimeException('Computed hash is invalid. ' . error_get_last()['message'] ?? '');
+				throw new \LogicException(
+					'Computed hash for input "' . $protectedPassword . '" is invalid: '
+					. (error_get_last()['message'] ?? '')
+				);
 			}
-			$protectedPassword = (string) $hash;
+			$protectedPassword = $hash;
 		}
 
 		$this->protectedPassword = $protectedPassword;
