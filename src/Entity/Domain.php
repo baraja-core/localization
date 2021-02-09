@@ -204,7 +204,6 @@ class Domain
 		if ($protectedPassword !== null) {
 			$hash = (string) @password_hash($protectedPassword, PASSWORD_DEFAULT, []); // @ is escalated to exception
 			if ($hash === '') {
-				/** @phpstan-ignore-next-line */
 				throw new \LogicException(
 					'Computed hash for input "' . $protectedPassword . '" is invalid: '
 					. (error_get_last()['message'] ?? ''),
