@@ -207,7 +207,7 @@ class Domain
 				/** @phpstan-ignore-next-line */
 				throw new \LogicException(
 					'Computed hash for input "' . $protectedPassword . '" is invalid: '
-					. (error_get_last()['message'] ?? '')
+					. (error_get_last()['message'] ?? ''),
 				);
 			}
 			$protectedPassword = $hash;
