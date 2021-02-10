@@ -14,10 +14,10 @@
 		"nette/utils": "^3.0",
 		"nette/caching": "^3.0",
 		"nette/http": "^3.0",
-		"baraja-core/doctrine": "^2.4"
+		"baraja-core/doctrine": "^3.0"
 	},
 	"require-dev": {
-		"baraja-core/package-manager": "^2.5",
+		"baraja-core/package-manager": "^3.0",
 		"phpstan/phpstan": "^0.12.74",
 		"tracy/tracy": "^2.8",
 		"phpstan/phpstan-nette": "^0.12.14",
