@@ -218,10 +218,8 @@ final class DomainAndLocaleTask extends BaseTask
 				->leftJoin('domain.locale', 'locale')
 				->where('domain.environment = :environment')
 				->andWhere('locale.locale = :locale')
-				->setParameters([
-					'environment' => $entity->getEnvironment(),
-					'locale' => $entity->getLocale(),
-				])
+				->setParameter('environment', $entity->getEnvironment())
+				->setParameter('locale', $entity->getLocale())
 				->getQuery()
 				->getResult();
 
