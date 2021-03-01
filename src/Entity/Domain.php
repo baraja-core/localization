@@ -116,7 +116,7 @@ class Domain
 		}
 		if (Strings::length($domain) > 255) {
 			throw new \InvalidArgumentException(
-				'The maximum length of the domain is 8 characters, but "' . $domain . '" given.'
+				'The maximum length of the domain is 8 characters, but "' . $domain . '" given.',
 			);
 		}
 
@@ -160,7 +160,7 @@ class Domain
 		if (\in_array($this->environment, self::ENVIRONMENTS, true) === false) {
 			throw new \RuntimeException(
 				'Environment "' . $this->environment . '" is invalid. '
-				. 'Please fix broken database record.'
+				. 'Please fix broken database record.',
 			);
 		}
 
@@ -173,7 +173,7 @@ class Domain
 		if (\in_array($environment, self::ENVIRONMENTS, true) === false) {
 			throw new \InvalidArgumentException(
 				'Environment "' . $environment . '" must be in '
-				. '"' . implode('", "', self::ENVIRONMENTS) . '".'
+				. '"' . implode('", "', self::ENVIRONMENTS) . '".',
 			);
 		}
 

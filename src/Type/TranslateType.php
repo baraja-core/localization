@@ -45,7 +45,7 @@ final class TranslateType extends Type
 		}
 
 		throw new LocalizationException(
-			'Language data must be Translation entity, but type "' . get_debug_type($value) . '" given.'
+			'Language data must be Translation entity, but type "' . get_debug_type($value) . '" given.',
 		);
 	}
 
