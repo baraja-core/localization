@@ -65,11 +65,7 @@ class Locale
 
 	public function __construct(string $locale)
 	{
-		if (!preg_match('/^[a-z]{2}$/', $locale = strtolower(trim($locale)))) {
-			throw new \InvalidArgumentException('Locale "' . $locale . '" must be 2 [a-z] characters.');
-		}
-
-		$this->locale = $locale;
+		$this->locale = Localization::normalize($locale);
 		$this->insertedDate = DateTime::from('now');
 		$this->domains = new ArrayCollection;
 	}

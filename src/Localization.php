@@ -39,6 +39,16 @@ final class Localization
 	}
 
 
+	public static function normalize(string $locale): string
+	{
+		if (!preg_match('/^[a-z]{2}$/', $locale = strtolower(trim($locale)))) {
+			throw new \InvalidArgumentException('Locale "' . $locale . '" is invalid, it must be 2 [a-z] characters.');
+		}
+
+		return $locale;
+	}
+
+
 	/**
 	 * Method return best locale for current request.
 	 * Matching process use this strategy:
@@ -76,7 +86,7 @@ final class Localization
 			);
 		}
 
-		return $locale;
+		return self::normalize($locale);
 	}
 
 
@@ -85,7 +95,7 @@ final class Localization
 	 */
 	public function setLocale(string $locale): self
 	{
-		$this->localeDefined = strtolower($locale);
+		$this->localeDefined = self::normalize($locale);
 
 		return $this;
 	}
@@ -96,7 +106,7 @@ final class Localization
 	 */
 	public function setContextLocale(string $contextLocale): self
 	{
-		$this->localeContext = strtolower($contextLocale);
+		$this->localeContext = self::normalize($contextLocale);
 
 		return $this;
 	}
@@ -169,7 +179,7 @@ final class Localization
 		$url = $request->getUrl();
 		$localeParameter = $url->getQueryParameter('locale');
 		if (\is_string($localeParameter) === true) {
-			$this->localeParameter = $localeParameter;
+			$this->localeParameter = self::normalize($localeParameter);
 		}
 		$this->currentDomain = str_replace('www.', '', $url->getDomain(4));
 	}
