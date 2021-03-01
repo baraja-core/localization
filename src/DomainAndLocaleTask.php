@@ -33,7 +33,7 @@ final class DomainAndLocaleTask extends BaseTask
 
 				return true;
 			}
-		} catch (\Exception $e) {
+		} catch (\Exception) {
 		}
 
 		/** @var EntityManager $em */
@@ -122,10 +122,9 @@ final class DomainAndLocaleTask extends BaseTask
 		while (true) {
 			while (true) {
 				if (($domain = $this->ask('What is your domain name? Keep empty for "localhost":')) !== null) {
-					if (preg_match('/^(?!\-)(?:(?:[a-zA-Z\d][a-zA-Z\d\-]{0,61})?[a-zA-Z\d]\.){1,126}(?!\d+)[a-zA-Z\d]{1,63}$/', $domain = str_replace('www.', '', $domain))) {
+					if (preg_match('/^(?!-)(?:(?:[a-zA-Z\d][a-zA-Z\d\-]{0,61})?[a-zA-Z\d]\.){1,126}(?!\d+)[a-zA-Z\d]{1,63}$/', $domain = str_replace('www.', '', $domain))) {
 						break;
 					}
-
 					Helpers::terminalRenderError('Domain "' . $domain . '" is invalid. Use format "baraja.cz" for example.');
 				} else {
 					break;
@@ -150,7 +149,7 @@ final class DomainAndLocaleTask extends BaseTask
 					break;
 				}
 				continue;
-			} catch (NoResultException | NonUniqueResultException $e) {
+			} catch (NoResultException | NonUniqueResultException) {
 				break;
 			}
 		}
@@ -314,7 +313,6 @@ final class DomainAndLocaleTask extends BaseTask
 			->getArrayResult();
 
 		$environments = [];
-		$possibleEnvironments = [Domain::ENVIRONMENT_LOCALHOST, Domain::ENVIRONMENT_BETA, Domain::ENVIRONMENT_PRODUCTION];
 
 		echo '| Environment | HTTPS | WWW | Locale | Pass | Protected | Default |  Inserted date   |  Updated date    | Domain |' . "\n";
 		echo '|-------------|-------|-----|--------|------|-----------|---------|------------------|------------------|--------|' . "\n";
@@ -342,10 +340,10 @@ final class DomainAndLocaleTask extends BaseTask
 
 		echo "\n\n";
 		echo 'Used environments: ' . implode(', ', array_keys($environments)) . "\n\n";
-		if (\count(array_keys($environments)) === \count($possibleEnvironments)) {
+		if (\count(array_keys($environments)) === \count(Domain::ENVIRONMENTS)) {
 			echo 'All environments exist.';
 		} else {
-			foreach ($possibleEnvironments as $possibleEnvironment) {
+			foreach (Domain::ENVIRONMENTS as $possibleEnvironment) {
 				if (isset($environments[$possibleEnvironment]) === false) {
 					echo 'Please define domain for "' . $possibleEnvironment . '" environment.' . "\n\n";
 				}
@@ -436,7 +434,7 @@ final class DomainAndLocaleTask extends BaseTask
 				->getSingleResult();
 
 			return;
-		} catch (NoResultException | NonUniqueResultException $e) {
+		} catch (NoResultException | NonUniqueResultException) {
 		}
 
 		try {
@@ -447,7 +445,7 @@ final class DomainAndLocaleTask extends BaseTask
 				->setMaxResults(1)
 				->getQuery()
 				->getSingleResult();
-		} catch (NoResultException | NonUniqueResultException $e) {
+		} catch (NoResultException | NonUniqueResultException) {
 			Helpers::terminalRenderError('Default locale does not exists. Can not create localhost domain. Did you registered locales correctly?');
 
 			return;

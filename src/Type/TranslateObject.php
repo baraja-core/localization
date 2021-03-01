@@ -19,9 +19,8 @@ trait TranslateObject
 	 * ->setName('Honza', 'cs'): void     set value in specific language
 	 *
 	 * @param string[] $args
-	 * @return string|null
 	 */
-	public function __call(string $name, array $args)
+	public function __call(string $name, array $args): ?string
 	{
 		if (
 			property_exists($this, $name)

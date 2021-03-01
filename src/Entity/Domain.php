@@ -20,11 +20,16 @@ class Domain
 	use UuidIdentifier;
 	use SmartObject;
 
-	public const ENVIRONMENT_LOCALHOST = 'localhost';
+	public const
+		ENVIRONMENT_LOCALHOST = 'localhost',
+		ENVIRONMENT_BETA = 'beta',
+		ENVIRONMENT_PRODUCTION = 'production';
 
-	public const ENVIRONMENT_BETA = 'beta';
-
-	public const ENVIRONMENT_PRODUCTION = 'production';
+	public const ENVIRONMENTS = [
+		self::ENVIRONMENT_LOCALHOST,
+		self::ENVIRONMENT_BETA,
+		self::ENVIRONMENT_PRODUCTION,
+	];
 
 	/** @ORM\Column(type="boolean") */
 	private bool $https = false;
@@ -110,7 +115,9 @@ class Domain
 			throw new \InvalidArgumentException('Domain "' . $domain . '" is not in valid format.');
 		}
 		if (Strings::length($domain) > 255) {
-			throw new \InvalidArgumentException('The maximum length of the domain is 8 characters, but "' . $domain . '" given.');
+			throw new \InvalidArgumentException(
+				'The maximum length of the domain is 8 characters, but "' . $domain . '" given.'
+			);
 		}
 
 		$this->domain = $domain;
@@ -150,8 +157,11 @@ class Domain
 
 	public function getEnvironment(): string
 	{
-		if (\in_array($this->environment, [self::ENVIRONMENT_LOCALHOST, self::ENVIRONMENT_BETA, self::ENVIRONMENT_PRODUCTION], true) === false) {
-			throw new \RuntimeException('Environment "' . $this->environment . '" is invalid. Please fix broken database record.');
+		if (\in_array($this->environment, self::ENVIRONMENTS, true) === false) {
+			throw new \RuntimeException(
+				'Environment "' . $this->environment . '" is invalid. '
+				. 'Please fix broken database record.'
+			);
 		}
 
 		return $this->environment;
@@ -160,8 +170,11 @@ class Domain
 
 	public function setEnvironment(string $environment): void
 	{
-		if (\in_array($environment, $environments = [self::ENVIRONMENT_LOCALHOST, self::ENVIRONMENT_BETA, self::ENVIRONMENT_PRODUCTION], true) === false) {
-			throw new \InvalidArgumentException('Environment "' . $environment . '" must be in "' . implode('", "', $environments) . '".');
+		if (\in_array($environment, self::ENVIRONMENTS, true) === false) {
+			throw new \InvalidArgumentException(
+				'Environment "' . $environment . '" must be in '
+				. '"' . implode('", "', self::ENVIRONMENTS) . '".'
+			);
 		}
 
 		$this->environment = $environment;

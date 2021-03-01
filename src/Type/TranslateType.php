@@ -15,7 +15,6 @@ final class TranslateType extends Type
 
 	/**
 	 * @param mixed[] $fieldDeclaration
-	 * @return string
 	 */
 	public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform): string
 	{
@@ -25,7 +24,6 @@ final class TranslateType extends Type
 
 	/**
 	 * @param string $value
-	 * @return Translation
 	 * @throws LocalizationException
 	 */
 	public function convertToPHPValue($value, AbstractPlatform $platform): Translation
@@ -34,12 +32,7 @@ final class TranslateType extends Type
 	}
 
 
-	/**
-	 * @param Translation|string|mixed|null $value
-	 * @return string|null
-	 * @throws LocalizationException
-	 */
-	public function convertToDatabaseValue($value, AbstractPlatform $platform): ?string
+	public function convertToDatabaseValue(mixed $value, AbstractPlatform $platform): ?string
 	{
 		if ($value === null) {
 			return null;
@@ -51,7 +44,9 @@ final class TranslateType extends Type
 			return (new Translation($value))->getSerialize();
 		}
 
-		throw new LocalizationException('Language data must be Translation entity, but type "' . \gettype($value) . '" given.');
+		throw new LocalizationException(
+			'Language data must be Translation entity, but type "' . get_debug_type($value) . '" given.'
+		);
 	}
 
 
