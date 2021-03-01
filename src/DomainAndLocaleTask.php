@@ -252,11 +252,12 @@ final class DomainAndLocaleTask extends BaseTask
 				->addOrderBy('locale.position', 'ASC')
 				->getQuery()
 				->getArrayResult();
-		} catch (TableNotFoundException $e) {
-			LocalizationException::tableDoesNotExist();
+		} catch (TableNotFoundException) {
+			throw new LocalizationException(
+				'Localization database tables does not exist. Please create tables and insert default configuration first.' . "\n"
+				. 'To solve this issue: Please create tables ("core__localization_domain" and "core__localization_locale") with default data.',
+			);
 		}
-
-		return [];
 	}
 
 
