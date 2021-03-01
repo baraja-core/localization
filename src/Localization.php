@@ -10,7 +10,7 @@ use Doctrine\DBAL\Exception\TableNotFoundException;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Nette\Caching\Cache;
-use Nette\Caching\IStorage;
+use Nette\Caching\Storage;
 use Nette\Http\Request;
 
 final class Localization
@@ -32,7 +32,7 @@ final class Localization
 	private ?LocalizationStatus $status = null;
 
 
-	public function __construct(EntityManager $entityManager, IStorage $storage)
+	public function __construct(EntityManager $entityManager, Storage $storage)
 	{
 		$this->entityManager = $entityManager;
 		$this->cache = new Cache($storage, 'baraja-localization');
