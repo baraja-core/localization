@@ -20,7 +20,7 @@ trait TranslateObject
 	 *
 	 * @param string[] $args
 	 */
-	public function __call(string $name, array $args): ?string
+	public function __call(string $name, array $args): mixed
 	{
 		if (
 			property_exists($this, $name)
