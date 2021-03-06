@@ -15,8 +15,6 @@ use Nette\Http\Request;
 
 final class Localization
 {
-	private EntityManager $entityManager;
-
 	private Cache $cache;
 
 	private ?string $localeDomain = null;
@@ -32,9 +30,10 @@ final class Localization
 	private ?LocalizationStatus $status = null;
 
 
-	public function __construct(EntityManager $entityManager, Storage $storage)
-	{
-		$this->entityManager = $entityManager;
+	public function __construct(
+		private EntityManager $entityManager,
+		Storage $storage
+	) {
 		$this->cache = new Cache($storage, 'baraja-localization');
 	}
 
