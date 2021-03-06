@@ -10,7 +10,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
-use Nette\SmartObject;
 use Nette\Utils\DateTime;
 use Nette\Utils\Strings;
 
@@ -27,7 +26,6 @@ use Nette\Utils\Strings;
 class Locale
 {
 	use UuidIdentifier;
-	use SmartObject;
 
 	/** @ORM\Column(type="string", unique=true, length=2) */
 	private string $locale;

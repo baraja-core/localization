@@ -7,7 +7,6 @@ namespace Baraja\Localization;
 
 use Baraja\Doctrine\UUID\UuidIdentifier;
 use Doctrine\ORM\Mapping as ORM;
-use Nette\SmartObject;
 use Nette\Utils\DateTime;
 use Nette\Utils\Strings;
 
@@ -18,7 +17,6 @@ use Nette\Utils\Strings;
 class Domain
 {
 	use UuidIdentifier;
-	use SmartObject;
 
 	public const
 		ENVIRONMENT_LOCALHOST = 'localhost',

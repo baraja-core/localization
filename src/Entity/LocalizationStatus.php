@@ -5,11 +5,8 @@ declare(strict_types=1);
 namespace Baraja\Localization;
 
 
-use Nette\SmartObject;
-
 final class LocalizationStatus
 {
-	use SmartObject;
 
 	/** @var string[] */
 	private array $availableLocales;
