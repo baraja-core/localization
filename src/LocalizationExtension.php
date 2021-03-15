@@ -7,6 +7,8 @@ namespace Baraja\Localization;
 
 use Baraja\Doctrine\DatabaseExtension;
 use Baraja\Doctrine\ORM\DI\OrmAnnotationsExtension;
+use Contributte\Translation\DI\TranslationExtension;
+use Contributte\Translation\LocaleResolver;
 use Nette\DI\CompilerExtension;
 use Nette\DI\Definitions\ServiceDefinition;
 use Nette\Http\Request;
@@ -39,6 +41,27 @@ final class LocalizationExtension extends CompilerExtension
 				. LocalizationHelper::class . '::setLocalization($service)',
 				['@' . Request::class],
 			);
+
+		if (class_exists(TranslationExtension::class)) {
+			$bridgeLocaleResolverExist = false;
+			foreach ($builder->getDefinitions() as $definition) {
+				if ($definition->getType() === \Baraja\Localization\Bridge\LocaleResolver::class) {
+					$bridgeLocaleResolverExist = true;
+					break;
+				}
+			}
+			if ($bridgeLocaleResolverExist === false) {
+				$builder->addDefinition($this->prefix('localeResolver'))
+					->setFactory(\Baraja\Localization\Bridge\LocaleResolver::class);
+
+				/** @var ServiceDefinition $localeResolver */
+				$localeResolver = $builder->getDefinitionByType(LocaleResolver::class);
+				$localeResolver->addSetup('addResolver', [
+					\Baraja\Localization\Bridge\LocaleResolver::class,
+					true
+				]);
+			}
+		}
 	}
 
 
