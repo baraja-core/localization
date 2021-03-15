@@ -58,7 +58,6 @@ final class LocalizationExtension extends CompilerExtension
 				$localeResolver = $builder->getDefinitionByType(LocaleResolver::class);
 				$localeResolver->addSetup('addResolver', [
 					\Baraja\Localization\Bridge\LocaleResolver::class,
-					true,
 				]);
 			}
 		}
