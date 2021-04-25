@@ -14,9 +14,9 @@ trait TranslateObject
 	use SmartObject;
 
 	/**
-	 * ->getName(): Translation           load property only
-	 * ->setName('Jan'): void             set value in current language
-	 * ->setName('Honza', 'cs'): void     set value in specific language
+	 * ->getName(): Translation           get property value
+	 * ->setName('Jan'): void             set value in current locale
+	 * ->setName('Honza', 'cs'): void     set value in specific locale
 	 *
 	 * @param string[] $args
 	 */
@@ -38,19 +38,12 @@ trait TranslateObject
 			return $this->{$this->firstLower($getter[1])};
 		}
 		if (preg_match('/^set([A-Z].*)$/', $name, $setter)) {
-			$value = $args[0] ?? null;
-			/** @var Translation|null $translation */
-			$ref = new \ReflectionProperty($this, $propertyName = $this->firstLower($setter[1]));
-			$ref->setAccessible(true);
-			if ($ref->isInitialized($this) === false) { // PHP 7.4 support for new entity
-				$translation = new Translation($value, $args[1] ?? null);
-			} elseif (($translation = $this->{$propertyName}) === null) {
-				$translation = new Translation($value, $args[1] ?? null);
-			} elseif ($translation->addTranslate($value, $args[1] ?? null) === true) {
-				$translation = $translation->regenerate();
-			}
-
-			$this->{$propertyName} = $translation;
+			$propertyName = $this->firstLower($setter[1]);
+			$this->{$propertyName} = $this->createTranslationEntity(
+				value: $args[0] ?? null,
+				propertyName: $propertyName,
+				locale: $args[1] ?? null,
+			);
 		} else {
 			static $recursion = false;
 
@@ -73,17 +66,73 @@ trait TranslateObject
 	}
 
 
-	final public function setPropertyTranslateValue(string $property, ?string $value, ?string $language): void
+	final public function setPropertyTranslateValue(string $property, ?string $value, ?string $locale): void
 	{
 		$ref = new \ReflectionClass($this);
 		$prop = $ref->getProperty($property);
 		$prop->setAccessible(true);
-		$prop->setValue($this, new Translation($value, $language));
+		$prop->setValue($this, new Translation($value, $locale));
 	}
 
 
 	private function firstLower(string $haystack): string
 	{
 		return mb_strtolower($haystack[0] ?? '', 'UTF-8') . \substr($haystack, 1);
+	}
+
+
+	private function createTranslationEntity(mixed $value, string $propertyName, ?string $locale = null): Translation
+	{
+		$ref = $this->getPropertyReflection($propertyName);
+		if ($ref->isInitialized($this) === false) { // PHP 7.4 support for typed property without default value
+			return new Translation($value, $locale);
+		}
+		/** @var Translation|null $translation */
+		$translation = $this->{$propertyName};
+		if ($translation === null) {
+			return new Translation($value, $locale);
+		}
+		if ($translation->addTranslate($value, $locale) === true) {
+			$translation = $translation->regenerate();
+		}
+
+		return $translation;
+	}
+
+
+	private function getPropertyReflection(string $propertyName): \ReflectionProperty
+	{
+		static $cache = [];
+		$key = get_class($this) . '::' . $propertyName;
+		$createReflection = static function (object $class, string $propertyName): \ReflectionProperty {
+			try {
+				$ref = new \ReflectionProperty($class, $propertyName);
+				$ref->setAccessible(true);
+
+				return $ref;
+			} catch (\ReflectionException) {
+				$refClass = new \ReflectionClass($class);
+				$parentClass = $refClass->getParentClass();
+				while ($parentClass !== false) {
+					try {
+						$ref = $parentClass->getProperty($propertyName);
+						$ref->setAccessible(true);
+
+						return $ref;
+					} catch (\ReflectionException) {
+						$parentClass = $refClass->getParentClass();
+					}
+				}
+			}
+			$e = new \RuntimeException('Property $' . $propertyName . ' in entity "' . get_debug_type($class) . '" does not exist.');
+			$e->tracyAction = [
+				'link' => 'https://stackoverflow.com/questions/26187097/doctrine-reflectionexception-property-does-not-exist',
+				'label' => 'more info',
+			];
+
+			throw $e;
+		};
+
+		return $cache[$key] ?? $cache[$key] = $createReflection($this, $propertyName);
 	}
 }
