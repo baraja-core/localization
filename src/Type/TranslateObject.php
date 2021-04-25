@@ -103,7 +103,7 @@ trait TranslateObject
 	private function getPropertyReflection(string $propertyName): \ReflectionProperty
 	{
 		static $cache = [];
-		$key = get_class($this) . '::' . $propertyName;
+		$key = static::class . '::' . $propertyName;
 		$createReflection = static function (object $class, string $propertyName): \ReflectionProperty {
 			try {
 				$ref = new \ReflectionProperty($class, $propertyName);
@@ -124,7 +124,7 @@ trait TranslateObject
 					}
 				}
 			}
-			$e = new \RuntimeException('Property $' . $propertyName . ' in entity "' . get_debug_type($class) . '" does not exist.');
+			$e = new \RuntimeException('Property $' . $propertyName . ' in entity "' . $class::class . '" does not exist.');
 			$e->tracyAction = [
 				'link' => 'https://stackoverflow.com/questions/26187097/doctrine-reflectionexception-property-does-not-exist',
 				'label' => 'more info',
