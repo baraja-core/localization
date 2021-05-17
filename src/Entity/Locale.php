@@ -142,7 +142,7 @@ class Locale
 			throw new \InvalidArgumentException(
 				'The maximum length of the title suffix is 64 characters, '
 				. 'but "' . $titleSuffix . '" given.',
-		 	);
+			);
 		}
 
 		$this->titleSuffix = trim($titleSuffix ?? '') ?: null;
