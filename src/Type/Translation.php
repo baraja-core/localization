@@ -7,11 +7,10 @@ namespace Baraja\Localization;
 
 final class Translation
 {
-
-	/** @var string[]|null */
+	/** @var array<string, string>|null */
 	private ?array $storage = null;
 
-	/** @var string[]|null */
+	/** @var array<string, string>|null */
 	private ?array $startupState = null;
 
 
@@ -20,7 +19,7 @@ final class Translation
 	 */
 	public function __construct(?string $data, ?string $language = null)
 	{
-		if ($data !== null && strncmp($data, 'T:{', 3) === 0) {
+		if ($data !== null && str_starts_with($data, 'T:{')) {
 			$json = (string) preg_replace(
 				'/^T:/',
 				'',
@@ -88,7 +87,8 @@ final class Translation
 			return $this->storage[$language];
 		}
 		if ($fallback === true) {
-			if (isset(($fallbackLanguages = LocalizationHelper::getFallbackLocales())[$language]) === true) {
+			$fallbackLanguages = LocalizationHelper::getFallbackLocales();
+			if (isset($fallbackLanguages[$language]) === true) {
 				foreach ($fallbackLanguages[$language] as $fallbackLanguage) {
 					if (isset($this->storage[$fallbackLanguage]) === true) {
 						return $this->storage[$fallbackLanguage];

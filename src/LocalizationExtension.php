@@ -45,19 +45,19 @@ final class LocalizationExtension extends CompilerExtension
 		if (class_exists(TranslationExtension::class)) {
 			$bridgeLocaleResolverExist = false;
 			foreach ($builder->getDefinitions() as $definition) {
-				if ($definition->getType() === \Baraja\Localization\Bridge\LocaleResolver::class) {
+				if ($definition->getType() === Bridge\LocaleResolver::class) {
 					$bridgeLocaleResolverExist = true;
 					break;
 				}
 			}
 			if ($bridgeLocaleResolverExist === false) {
 				$builder->addDefinition($this->prefix('localeResolver'))
-					->setFactory(\Baraja\Localization\Bridge\LocaleResolver::class);
+					->setFactory(Bridge\LocaleResolver::class);
 
 				/** @var ServiceDefinition $localeResolver */
 				$localeResolver = $builder->getDefinitionByType(LocaleResolver::class);
 				$localeResolver->addSetup('addResolver', [
-					\Baraja\Localization\Bridge\LocaleResolver::class,
+					Bridge\LocaleResolver::class,
 				]);
 			}
 		}

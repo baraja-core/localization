@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 // --package-registrator-task--
 
-if (PHP_SAPI !== 'cli' || class_exists(\Baraja\PackageManager\Composer\TaskManager::class) === false) {
+use Baraja\Localization\DomainAndLocaleTask;
+use Baraja\PackageManager\Composer\TaskManager;
+use Baraja\PackageManager\PackageRegistrator;
+
+if (PHP_SAPI !== 'cli' || class_exists(TaskManager::class) === false) {
 	return;
 }
 
-\Baraja\PackageManager\Composer\TaskManager::get()->addTask(
-	new \Baraja\Localization\DomainAndLocaleTask(\Baraja\PackageManager\PackageRegistrator::get()),
+TaskManager::get()->addTask(
+	new DomainAndLocaleTask(PackageRegistrator::get()),
 );

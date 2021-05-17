@@ -41,7 +41,7 @@ final class DomainAndLocaleTask extends BaseTask
 		$this->entityManager = $em;
 		echo 'Locales:' . "\n\n";
 
-		if (($locales = $this->selectLocales()) === []) {
+		if ($this->selectLocales() === []) {
 			echo 'Locale table is empty.' . "\n\n";
 			$this->createLocale();
 			echo "\n\n";
@@ -50,11 +50,11 @@ final class DomainAndLocaleTask extends BaseTask
 		}
 		if (
 			PackageRegistrator::isConfigurationMode() === true
-			|| $this->renderLocaleTable($locales = $this->selectLocales()) === 0
+			|| $this->renderLocaleTable($this->selectLocales()) === 0
 		) {
 			while ($this->ask('Create new locale?', ['y', 'n']) === 'y') {
 				$this->createLocale();
-				$this->renderLocaleTable($locales = $this->selectLocales());
+				$this->renderLocaleTable($this->selectLocales());
 			}
 		} else {
 			echo 'Locale settings was skipped, because table contains some locales.';
@@ -118,11 +118,12 @@ final class DomainAndLocaleTask extends BaseTask
 	private function createDomain(): void
 	{
 		echo "\n\n";
-		$domain = null;
 		while (true) {
 			while (true) {
-				if (($domain = $this->ask('What is your domain name? Keep empty for "localhost":')) !== null) {
-					if (preg_match('/^(?!-)(?:(?:[a-zA-Z\d][a-zA-Z\d\-]{0,61})?[a-zA-Z\d]\.){1,126}(?!\d+)[a-zA-Z\d]{1,63}$/', $domain = str_replace('www.', '', $domain))) {
+				$domain = $this->ask('What is your domain name? Keep empty for "localhost":');
+				if ($domain !== null) {
+					$domain = str_replace('www.', '', $domain);
+					if (preg_match('/^(?!-)(?:(?:[a-zA-Z\d][a-zA-Z\d\-]{0,61})?[a-zA-Z\d]\.){1,126}(?!\d+)[a-zA-Z\d]{1,63}$/', $domain)) {
 						break;
 					}
 					Helpers::terminalRenderError('Domain "' . $domain . '" is invalid. Use format "baraja.cz" for example.');
@@ -273,7 +274,8 @@ final class DomainAndLocaleTask extends BaseTask
 		echo '|--------|---------|--------|----------|------------------|' . "\n";
 
 		foreach ($locales as $locale) {
-			if (($insertedDateCol = $locale['insertedDate']) instanceof \DateTime) {
+			$insertedDateCol = $locale['insertedDate'];
+			if ($insertedDateCol instanceof \DateTime) {
 				/** @var \DateTime $insertedDateCol */
 				$insertedDate = $insertedDateCol->format('Y-m-d H:i');
 			} else {

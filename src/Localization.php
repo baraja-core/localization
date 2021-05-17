@@ -40,8 +40,12 @@ final class Localization
 
 	public static function normalize(string $locale): string
 	{
-		if (!preg_match('/^[a-z]{2}$/', $locale = strtolower(trim($locale)))) {
-			throw new \InvalidArgumentException('Locale "' . $locale . '" is invalid, it must be 2 [a-z] characters.');
+		$locale = strtolower(trim($locale));
+		if (!preg_match('/^[a-z]{2}$/', $locale)) {
+			throw new \InvalidArgumentException(
+				'Locale "' . $locale . '" is invalid, because it must be 2 [a-z] characters.'
+				. "\n" . 'To solve this issue: Use alphabet locale like "en", "de", "cs".',
+			);
 		}
 
 		return $locale;
@@ -203,8 +207,10 @@ final class Localization
 		if ($this->status !== null) {
 			return $this->status;
 		}
-		if (($config = $this->cache->load('configuration')) === null) {
-			$this->cache->save('configuration', $config = $this->createCache(), [
+		$config = $this->cache->load('configuration');
+		if ($config === null) {
+			$config = $this->createCache();
+			$this->cache->save('configuration', $config, [
 				Cache::EXPIRE => '30 minutes',
 			]);
 		}

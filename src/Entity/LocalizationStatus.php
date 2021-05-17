@@ -7,7 +7,6 @@ namespace Baraja\Localization;
 
 final class LocalizationStatus
 {
-
 	/** @var string[] */
 	private array $availableLocales;
 

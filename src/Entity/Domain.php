@@ -7,8 +7,6 @@ namespace Baraja\Localization;
 
 use Baraja\Doctrine\UUID\UuidIdentifier;
 use Doctrine\ORM\Mapping as ORM;
-use Nette\Utils\DateTime;
-use Nette\Utils\Strings;
 
 /**
  * @ORM\Entity()
@@ -70,8 +68,8 @@ class Domain
 		$this->setDomain($domain);
 		$this->locale = $locale;
 		$this->setEnvironment($environment);
-		$this->insertedDate = DateTime::from('now');
-		$this->updatedDate = DateTime::from('now');
+		$this->insertedDate = new \DateTime('now');
+		$this->updatedDate = new \DateTime('now');
 	}
 
 
@@ -112,7 +110,7 @@ class Domain
 		if ($domain !== 'localhost' && !preg_match('/^(?:[-A-Za-z0-9]+\.)+[A-Za-z]{2,6}$/', $domain)) {
 			throw new \InvalidArgumentException('Domain "' . $domain . '" is not in valid format.');
 		}
-		if (Strings::length($domain) > 255) {
+		if (strlen($domain) > 255) {
 			throw new \InvalidArgumentException(
 				'The maximum length of the domain is 8 characters, but "' . $domain . '" given.',
 			);
@@ -272,6 +270,6 @@ class Domain
 
 	private function setUpdatedDate(): void
 	{
-		$this->updatedDate = DateTime::from('now');
+		$this->updatedDate = new \DateTime('now');
 	}
 }

@@ -24,7 +24,7 @@ trait TranslateObject
 	{
 		if (
 			property_exists($this, $name)
-			&& ObjectHelpers::hasProperty($class = static::class, $name) === 'event'
+			&& ObjectHelpers::hasProperty(static::class, $name) === 'event'
 		) {
 			if (is_iterable($this->$name)) {
 				foreach ($this->$name as $handler) {
