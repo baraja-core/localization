@@ -18,7 +18,7 @@
 	},
 	"require-dev": {
 		"baraja-core/package-manager": "^3.0",
-		"contributte/translation": "^0.8.3",
+		"contributte/translation": "^0.9.0",
 		"phpstan/phpstan": "^0.12.74",
 		"tracy/tracy": "^2.8",
 		"phpstan/phpstan-nette": "^0.12.14",
