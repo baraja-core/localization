@@ -96,7 +96,8 @@ final class DomainAndLocaleTask extends BaseTask
 		} while (true);
 
 		$entity = new Locale($locale);
-		$this->entityManager->persist($entity)->flush();
+		$this->entityManager->persist($entity);
+		$this->entityManager->flush();
 
 		/** @var Locale[] $allLocales */
 		$allLocales = $this->entityManager->getRepository(Locale::class)->findAll();
@@ -185,7 +186,8 @@ final class DomainAndLocaleTask extends BaseTask
 		];
 
 		$entity = new Domain($domain, $localeCodeToEntity[$localeCode ?? $defaultLocale], $environments[$environment] ?? Domain::ENVIRONMENT_BETA);
-		$this->entityManager->persist($entity)->flush();
+		$this->entityManager->persist($entity);
+		$this->entityManager->flush();
 		$entity->setHttps($this->ask('Use https for "' . $domain . '"?', ['y', 'n']) === 'y');
 		$entity->setWww($this->ask('Use www prefix for "' . $domain . '"?', ['y', 'n']) === 'y');
 
@@ -460,6 +462,7 @@ final class DomainAndLocaleTask extends BaseTask
 		$domain->setProtected(false);
 		$domain->setDefault(true);
 
-		$this->entityManager->persist($domain)->flush();
+		$this->entityManager->persist($domain);
+		$this->entityManager->flush();
 	}
 }
