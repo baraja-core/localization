@@ -86,14 +86,19 @@ final class DomainAndLocaleTask extends BaseTask
 	{
 		echo '-> CREATE NEW LOCALE' . "\n\n";
 
-		do {
+		$locale = null;
+		for ($ttl = 8; $ttl > 0; $ttl--) {
 			$locale = strtolower($this->ask('Locale code (2 characters):') ?? '');
 			if ($locale === '' || preg_match('/^[a-z]{2}$/', $locale) === 0) {
 				Helpers::terminalRenderError('Locale "' . $locale . '" is invalid. Please type 2 lower characters (a-z).');
+				$locale = null;
 			} else {
 				break;
 			}
-		} while (true);
+		}
+		if ($locale === null) {
+			$locale = 'en';
+		}
 
 		$entity = new Locale($locale);
 		$this->entityManager->persist($entity);
