@@ -12,6 +12,7 @@ use Doctrine\ORM\NoResultException;
 use Nette\Caching\Cache;
 use Nette\Caching\Storage;
 use Nette\Http\Request;
+use Nette\Http\Url;
 
 final class Localization
 {
@@ -181,8 +182,19 @@ final class Localization
 
 		$url = $request->getUrl();
 		$localeParameter = $url->getQueryParameter('locale');
-		if (\is_string($localeParameter) === true) {
-			$this->localeParameter = self::normalize($localeParameter);
+		if (is_string($localeParameter) === true) {
+			try {
+				$this->localeParameter = self::normalize($localeParameter);
+			} catch (\InvalidArgumentException) {
+				if (headers_sent() === false) {
+					$canonicalUrl = new Url($url);
+					$canonicalUrl->setQueryParameter('locale', null);
+					if ($url->getAbsoluteUrl() !== $canonicalUrl->getAbsoluteUrl()) {
+						header('Location: ' . $canonicalUrl->getAbsoluteUrl());
+						die;
+					}
+				}
+			}
 		}
 		$this->currentDomain = str_replace('www.', '', $url->getDomain(4));
 	}
