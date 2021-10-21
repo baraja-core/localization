@@ -66,14 +66,16 @@ final class Localization
 	public function getLocale(bool $fallbackToContextLocale = false): string
 	{
 		if (PHP_SAPI === 'cli') {
-			throw new \RuntimeException('Localization: Current locale is not available in CLI.');
+			$this->localeDefined = $this->getDefaultLocale();
+		}
+		if ($this->localeDefined !== null) {
+			return $this->localeDefined;
 		}
 		if ($this->localeDomain === null) {
 			$this->localeDomain = $this->getStatus()->getDomainToLocale()[$this->currentDomain] ?? null;
 		}
 
-		$locale = $this->localeDefined ?? $this->localeParameter ?? $this->localeDomain;
-
+		$locale = $this->localeParameter ?? $this->localeDomain;
 		if ($fallbackToContextLocale === true && $locale === null) { // Fallback only in case of unmatched locale
 			if ($this->localeContext === null) {
 				throw new LocalizationException('Context locale is empty.');
@@ -89,8 +91,9 @@ final class Localization
 				. 'Did you defined default locale for all domains or use router rewriting?',
 			);
 		}
+		$this->localeDefined = self::normalize($locale);
 
-		return self::normalize($locale);
+		return $this->localeDefined;
 	}
 
 
