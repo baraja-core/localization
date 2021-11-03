@@ -19,10 +19,10 @@
 	"require-dev": {
 		"baraja-core/package-manager": "^3.0",
 		"contributte/translation": "^0.9.0",
-		"phpstan/phpstan": "^0.12.74",
+		"phpstan/phpstan": "^1.0",
+		"phpstan/phpstan-nette": "^1.0",
+		"spaze/phpstan-disallowed-calls": "^2.0",
 		"tracy/tracy": "^2.8",
-		"phpstan/phpstan-nette": "^0.12.14",
-		"spaze/phpstan-disallowed-calls": "^1.1",
 		"roave/security-advisories": "dev-master"
 	},
 	"autoload": {
