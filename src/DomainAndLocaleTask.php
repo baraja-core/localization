@@ -246,11 +246,19 @@ final class DomainAndLocaleTask extends BaseTask
 
 
 	/**
-	 * @return mixed[][]
+	 * @return array<int, array{
+	 *     id: int,
+	 *     locale: string,
+	 *     default: bool,
+	 *     active: bool,
+	 *     position: int,
+	 *     insertedDate: \DateTimeInterface
+	 * }>
 	 */
 	private function selectLocales(): array
 	{
 		try {
+			/** @phpstan-ignore-next-line */
 			return $this->entityManager->getRepository(Locale::class)
 				->createQueryBuilder('locale')
 				->select('PARTIAL locale.{id, locale, default, active, position, insertedDate}')
@@ -271,8 +279,14 @@ final class DomainAndLocaleTask extends BaseTask
 	/**
 	 * Render current locale table and return count of locales.
 	 *
-	 * @param mixed[][] $locales
-	 * @return int
+	 * @param array<int, array{
+	 *     id: int,
+	 *     locale: string,
+	 *     default: bool,
+	 *     active: bool,
+	 *     position: int,
+	 *     insertedDate: \DateTimeInterface
+	 * }> $locales
 	 */
 	private function renderLocaleTable(array $locales): int
 	{
@@ -281,19 +295,11 @@ final class DomainAndLocaleTask extends BaseTask
 		echo '|--------|---------|--------|----------|------------------|' . "\n";
 
 		foreach ($locales as $locale) {
-			$insertedDateCol = $locale['insertedDate'];
-			if ($insertedDateCol instanceof \DateTime) {
-				/** @var \DateTime $insertedDateCol */
-				$insertedDate = $insertedDateCol->format('Y-m-d H:i');
-			} else {
-				$insertedDate = (string) $insertedDateCol;
-			}
-
 			echo '|' . str_pad($locale['locale'], 8, ' ', STR_PAD_BOTH);
 			echo '|' . str_pad($locale['default'] ? 'y' : 'n', 9, ' ', STR_PAD_BOTH);
 			echo '|' . str_pad($locale['active'] ? 'y' : 'n', 8, ' ', STR_PAD_BOTH);
 			echo '|' . str_pad((string) $locale['position'], 10, ' ', STR_PAD_BOTH);
-			echo '|' . str_pad($insertedDate, 18, ' ', STR_PAD_BOTH);
+			echo '|' . str_pad($locale['insertedDate']->format('Y-m-d H:i'), 18, ' ', STR_PAD_BOTH);
 			echo '|' . "\n";
 		}
 
@@ -312,7 +318,20 @@ final class DomainAndLocaleTask extends BaseTask
 
 		echo "\n\n" . 'CURRENT DOMAIN TABLE:' . "\n\n";
 
-		/** @var mixed[][]|mixed[][][] $domains */
+		/** @var array<int, array{
+		 *     id: int,
+		 *     environment: string,
+		 *     https: bool,
+		 *     www: bool,
+		 *     protectedPassword: string|null,
+		 *     protected: bool,
+		 *     default: bool,
+		 *     insertedDate: \DateTimeInterface,
+		 *     updatedDate: \DateTimeInterface,
+		 *     domain: string,
+		 *     locale: array{id: int, locale: string}|null
+		 * }> $domains
+		 */
 		$domains = $this->entityManager->getRepository(Domain::class)
 			->createQueryBuilder('domain')
 			->select('PARTIAL domain.{id, environment, https, www, protectedPassword, protected, default, insertedDate, updatedDate, domain}')

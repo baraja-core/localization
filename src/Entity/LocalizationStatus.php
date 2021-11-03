@@ -7,62 +7,62 @@ namespace Baraja\Localization;
 
 final class LocalizationStatus
 {
-	/** @var string[] */
+	/** @var array<int, string> */
 	private array $availableLocales;
 
 	private string $defaultLocale;
 
-	/** @var string[][] */
+	/** @var array<string, array<int, string>> */
 	private array $fallbackLocales;
 
-	/** @var string[]|null[] */
+	/** @var array<string, string|null> */
 	private array $localeToTitleSuffix;
 
-	/** @var string[]|null[] */
+	/** @var array<string, string|null> */
 	private array $localeToTitleSeparator;
 
-	/** @var string[]|null[] */
+	/** @var array<string, string|null> */
 	private array $localeToTitleFormat;
 
-	/** @var string[]|null[] */
+	/** @var array<string, string|null> */
 	private array $localeToSiteName;
 
-	/** @var string[] */
+	/** @var array<string, string> */
 	private array $domainToLocale;
 
-	/** @var string[] */
+	/** @var array<string, string> */
 	private array $domainToEnvironment;
 
-	/** @var bool[] */
+	/** @var array<string, bool> */
 	private array $domainToProtected;
 
-	/** @var string[] */
+	/** @var array<string, string> */
 	private array $domainToScheme;
 
-	/** @var bool[] */
+	/** @var array<string, bool> */
 	private array $domainToUseWww;
 
-	/** @var string[][] */
+	/** @var array<string, array<string, string>> */
 	private array $domainByEnvironment;
 
-	/** @var mixed[][]|mixed[][][] */
+	/** @var array<int, array{id: int, locale: array{id: int, locale: string}|null, domain: string, environment: string, protected: bool, https: bool, www: bool, default: bool}> */
 	private array $domains;
 
 
 	/**
-	 * @param string[] $availableLocales
-	 * @param string[][] $fallbackLocales
-	 * @param string[]|null[] $localeToTitleSuffix
-	 * @param string[]|null[] $localeToTitleSeparator
-	 * @param string[]|null[] $localeToTitleFormat
-	 * @param string[]|null[] $localeToSiteName
-	 * @param string[] $domainToLocale
-	 * @param string[] $domainToEnvironment
-	 * @param bool[] $domainToProtected
-	 * @param string[] $domainToScheme
-	 * @param bool[] $domainToUseWww
-	 * @param string[][] $domainByEnvironment
-	 * @param mixed[][]|mixed[][][] $domains
+	 * @param array<int, string> $availableLocales
+	 * @param array<string, array<int, string>> $fallbackLocales
+	 * @param array<string, string|null> $localeToTitleSuffix
+	 * @param array<string, string|null> $localeToTitleSeparator
+	 * @param array<string, string|null> $localeToTitleFormat
+	 * @param array<string, string|null> $localeToSiteName
+	 * @param array<string, string> $domainToLocale
+	 * @param array<string, string> $domainToEnvironment
+	 * @param array<string, bool> $domainToProtected
+	 * @param array<string, string> $domainToScheme
+	 * @param array<string, bool> $domainToUseWww
+	 * @param array<string, array<string, string>> $domainByEnvironment
+	 * @param array<int, array{id: int, locale: array{id: int, locale: string}|null, domain: string, environment: string, protected: bool, https: bool, www: bool, default: bool}> $domains
 	 */
 	public function __construct(
 		array $availableLocales,
@@ -98,7 +98,7 @@ final class LocalizationStatus
 
 
 	/**
-	 * @return string[]
+	 * @return array<int, string>
 	 */
 	public function getAvailableLocales(): array
 	{
@@ -113,7 +113,7 @@ final class LocalizationStatus
 
 
 	/**
-	 * @return string[][]
+	 * @return array<string, array<int, string>>
 	 */
 	public function getFallbackLocales(): array
 	{
@@ -122,7 +122,7 @@ final class LocalizationStatus
 
 
 	/**
-	 * @return string[]|null[]
+	 * @return array<string, string|null>
 	 */
 	public function getLocaleToTitleSuffix(): array
 	{
@@ -131,7 +131,7 @@ final class LocalizationStatus
 
 
 	/**
-	 * @return string[]|null[]
+	 * @return array<string, string|null>
 	 */
 	public function getLocaleToTitleSeparator(): array
 	{
@@ -140,7 +140,7 @@ final class LocalizationStatus
 
 
 	/**
-	 * @return string[]|null[]
+	 * @return array<string, string|null>
 	 */
 	public function getLocaleToTitleFormat(): array
 	{
@@ -149,16 +149,16 @@ final class LocalizationStatus
 
 
 	/**
-	 * @return string[]|null[]
+	 * @return array<string, string|null>
 	 */
-	public function getLocaleToSiteName(): ?array
+	public function getLocaleToSiteName(): array
 	{
 		return $this->localeToSiteName;
 	}
 
 
 	/**
-	 * @return string[]
+	 * @return array<string, string>
 	 */
 	public function getDomainToLocale(): array
 	{
@@ -167,7 +167,7 @@ final class LocalizationStatus
 
 
 	/**
-	 * @return string[]
+	 * @return array<string, string>
 	 */
 	public function getDomainToEnvironment(): array
 	{
@@ -176,7 +176,7 @@ final class LocalizationStatus
 
 
 	/**
-	 * @return bool[]
+	 * @return array<string, bool>
 	 */
 	public function getDomainToProtected(): array
 	{
@@ -185,7 +185,7 @@ final class LocalizationStatus
 
 
 	/**
-	 * @return string[]
+	 * @return array<string, string>
 	 */
 	public function getDomainToScheme(): array
 	{
@@ -194,7 +194,7 @@ final class LocalizationStatus
 
 
 	/**
-	 * @return bool[]
+	 * @return array<string, bool>
 	 */
 	public function getDomainToUseWww(): array
 	{
@@ -203,7 +203,7 @@ final class LocalizationStatus
 
 
 	/**
-	 * @return string[][]
+	 * @return array<string, array<string, string>>
 	 */
 	public function getDomainByEnvironment(): array
 	{
@@ -212,7 +212,7 @@ final class LocalizationStatus
 
 
 	/**
-	 * @return mixed[][]|mixed[][][]
+	 * @return array<int, array{id: int, locale: array{id: int, locale: string}|null, domain: string, environment: string, protected: bool, https: bool, www: bool, default: bool}>
 	 */
 	public function getDomains(): array
 	{

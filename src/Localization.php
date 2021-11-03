@@ -161,7 +161,7 @@ final class Localization
 	 *    'cs' => ['sk', 'en']
 	 * ]
 	 *
-	 * @return string[][]
+	 * @return array<string, array<int, string>>
 	 */
 	public function getFallbackLocales(): array
 	{
@@ -222,6 +222,24 @@ final class Localization
 		if ($this->status !== null) {
 			return $this->status;
 		}
+		/**
+		 * @var null|array{
+		 *     availableLocales: array<int, string>,
+		 *     defaultLocale: string,
+		 *     fallbackLocales: array<string, array<int, string>>,
+		 *     localeToTitleSuffix: array<string, string|null>,
+		 *     localeToTitleSeparator: array<string, string|null>,
+		 *     localeToTitleFormat: array<string, string|null>,
+		 *     localeToSiteName: array<string, string|null>,
+		 *     domainToLocale: array<string, string>,
+		 *     domainToEnvironment: array<string, string>,
+		 *     domainToProtected: array<string, bool>,
+		 *     domainToScheme: array<string, string>,
+		 *     domainToUseWww: array<string, bool>,
+		 *     domainByEnvironment: array<string, array<string, string>>,
+		 *     domains: array<int, array{id: int, locale: array{id: int, locale: string}|null, domain: string, environment: string, protected: bool, https: bool, www: bool, default: bool}>}>
+		 * } $config
+		 */
 		$config = $this->cache->load('configuration');
 		if ($config === null) {
 			$config = $this->createCache();
@@ -254,18 +272,36 @@ final class Localization
 	 */
 	public function getLocaleEntity(string $locale): Locale
 	{
-		return $this->entityManager->getRepository(Locale::class)
+		$return = $this->entityManager->getRepository(Locale::class)
 			->createQueryBuilder('locale')
 			->where('locale.locale = :locale')
 			->setParameter('locale', $locale)
 			->setMaxResults(1)
 			->getQuery()
 			->getSingleResult();
+		assert($return instanceof Locale);
+
+		return $return;
 	}
 
 
 	/**
-	 * @return mixed[]
+	 * @return array{
+	 *     availableLocales: array<int, string>,
+	 *     defaultLocale: string,
+	 *     fallbackLocales: array{},
+	 *     localeToTitleSuffix: array<string, string|null>,
+	 *     localeToTitleSeparator: array<string, string|null>,
+	 *     localeToTitleFormat: array<string, string|null>,
+	 *     localeToSiteName: array<string, string|null>,
+	 *     domainToLocale: non-empty-array<string, string>,
+	 *     domainToEnvironment: non-empty-array<string, string>,
+	 *     domainToProtected: non-empty-array<string, bool>,
+	 *     domainToScheme: non-empty-array<string, string>,
+	 *     domainToUseWww: non-empty-array<string, bool>,
+	 *     domainByEnvironment: non-empty-array<string, array<string, string>>,
+	 *     domains: non-empty-array<int, array{id: int, locale: array{id: int, locale: string}|null, domain: string, environment: string, protected: bool, https: bool, www: bool, default: bool}>}>
+	 * }
 	 */
 	private function createCache(): array
 	{
@@ -283,7 +319,7 @@ final class Localization
 		$domainByEnvironment = [];
 
 		try {
-			/** @var mixed[][]|mixed[][][] $domains */
+			/** @var array<int, array{id: int, locale: array{id: int, locale: string}|null, domain: string, environment: string, protected: bool, https: bool, www: bool, default: bool}>}> $domains */
 			$domains = $this->entityManager->getRepository(Domain::class)
 				->createQueryBuilder('domain')
 				->select('domain, locale')
@@ -304,12 +340,16 @@ final class Localization
 		}
 
 		foreach ($domains as $domain) {
-			$domainToLocale[$domain['domain']] = $locale = (string) ($domain['locale']['locale'] ?? 'en');
-			$domainToEnvironment[$domain['domain']] = (string) $domain['environment'];
-			$domainIsProtected[$domain['domain']] = (bool) $domain['protected'];
-			$domainToScheme[$domain['domain']] = ((bool) $domain['https']) === true ? 'https' : 'http';
-			$domainToUseWww[$domain['domain']] = (bool) $domain['www'];
-			if (isset($domainByEnvironment[$domain['environment']][$locale]) === false || $domain['default'] === true) {
+			$locale = ($domain['locale']['locale'] ?? 'en');
+			$domainToLocale[$domain['domain']] = $locale;
+			$domainToEnvironment[$domain['domain']] = $domain['environment'];
+			$domainIsProtected[$domain['domain']] = $domain['protected'];
+			$domainToScheme[$domain['domain']] = $domain['https'] === true ? 'https' : 'http';
+			$domainToUseWww[$domain['domain']] = $domain['www'];
+			if (
+				isset($domainByEnvironment[$domain['environment']][$locale]) === false
+				|| $domain['default'] === true
+			) {
 				if (isset($domainByEnvironment[$domain['environment']]) === false) {
 					$domainByEnvironment[$domain['environment']] = [];
 				}
@@ -317,6 +357,7 @@ final class Localization
 			}
 		}
 
+		/** @var array<int, array{id: int, locale: string, default: bool, titleSuffix: string|null, titleSeparator: string|null, titleFormat: string|null, siteName: string|null}> $locales */
 		$locales = $this->entityManager->getRepository(Locale::class)
 			->createQueryBuilder('locale')
 			->select('PARTIAL locale.{id, locale, default, titleSuffix, titleSeparator, titleFormat, siteName}')
@@ -329,7 +370,11 @@ final class Localization
 			$availableLocales[] = $locale['locale'];
 			if ($locale['default'] === true) {
 				if ($defaultLocale !== null) {
-					trigger_error('Multiple default locales: Locale "' . $defaultLocale . '" and "' . $locale['locale'] . '" is marked as default.');
+					trigger_error(sprintf(
+						'Multiple default locales: Locale "%s" and "%s" is marked as default.',
+						$defaultLocale,
+						$locale['locale'],
+					));
 				} else {
 					$defaultLocale = $locale['locale'];
 				}
@@ -340,10 +385,11 @@ final class Localization
 			$localeToSiteName[$locale['locale']] = $locale['siteName'];
 		}
 
+		/** @phpstan-ignore-next-line */
 		return [
 			'availableLocales' => $availableLocales,
 			'defaultLocale' => $defaultLocale,
-			'fallbackLocales' => [], // TODO: Implement smart logic for get fallback languages by common convention.
+			'fallbackLocales' => [], // TODO: array<string, array<int, string>> Implement smart logic for get fallback languages by common convention.
 			'localeToTitleSuffix' => $localeToTitleSuffix,
 			'localeToTitleSeparator' => $localeToTitleSeparator,
 			'localeToTitleFormat' => $localeToTitleFormat,

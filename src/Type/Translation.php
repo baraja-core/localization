@@ -43,7 +43,8 @@ final class Translation
 				}
 			}
 
-			$storageData = json_decode($json, true, 512, $flags);
+			/** @var array<string, string> $storageData */
+			$storageData = json_decode($json, true, 512, JSON_THROW_ON_ERROR | $flags);
 			if ($error = json_last_error()) {
 				throw new LocalizationException(
 					json_last_error_msg() . "\nJson: " . $json . "\n\nOriginal data:\n" . $data,
@@ -51,7 +52,8 @@ final class Translation
 				);
 			}
 
-			$this->startupState = $this->storage = $storageData;
+			$this->storage = $storageData;
+			$this->startupState = $storageData;
 		} else {
 			if ($language === null) {
 				if (PHP_SAPI === 'cli') {
