@@ -10,8 +10,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
-use Nette\Utils\DateTime;
-use Nette\Utils\Strings;
 
 /**
  * @ORM\Entity()
@@ -39,8 +37,8 @@ class Locale
 	/** @ORM\Column(type="smallint") */
 	private int $position = 1;
 
-	/** @ORM\Column(type="datetime") */
-	private \DateTime $insertedDate;
+	/** @ORM\Column(type="datetime_immutable") */
+	private \DateTimeImmutable $insertedDate;
 
 	/**
 	 * @var Domain[]|Collection
@@ -64,7 +62,7 @@ class Locale
 	public function __construct(string $locale)
 	{
 		$this->locale = Localization::normalize($locale);
-		$this->insertedDate = DateTime::from('now');
+		$this->insertedDate = new \DateTimeImmutable('now');
 		$this->domains = new ArrayCollection;
 	}
 
@@ -124,7 +122,7 @@ class Locale
 	}
 
 
-	public function getInsertedDate(): \DateTime
+	public function getInsertedDate(): \DateTimeImmutable
 	{
 		return $this->insertedDate;
 	}
@@ -138,7 +136,7 @@ class Locale
 
 	public function setTitleSuffix(?string $titleSuffix): void
 	{
-		if ($titleSuffix !== null && Strings::length($titleSuffix) > 64) {
+		if ($titleSuffix !== null && mb_strlen($titleSuffix, 'UTF-8') > 64) {
 			throw new \InvalidArgumentException(
 				'The maximum length of the title suffix is 64 characters, '
 				. 'but "' . $titleSuffix . '" given.',
@@ -157,7 +155,7 @@ class Locale
 
 	public function setTitleSeparator(?string $titleSeparator): void
 	{
-		if ($titleSeparator !== null && Strings::length($titleSeparator) > 8) {
+		if ($titleSeparator !== null && mb_strlen($titleSeparator, 'UTF-8') > 8) {
 			throw new \InvalidArgumentException(
 				'The maximum length of the title separator is 8 characters, '
 				. 'but "' . $titleSeparator . '" given.',
@@ -176,7 +174,7 @@ class Locale
 
 	public function setTitleFormat(?string $titleFormat): void
 	{
-		if ($titleFormat !== null && Strings::length($titleFormat) > 64) {
+		if ($titleFormat !== null && mb_strlen($titleFormat, 'UTF-8') > 64) {
 			throw new \InvalidArgumentException(
 				'The maximum length of the title format is 64 characters, '
 				. 'but "' . $titleFormat . '" given.',
@@ -195,7 +193,7 @@ class Locale
 
 	public function setSiteName(?string $siteName): void
 	{
-		if ($siteName !== null && Strings::length($siteName) > 64) {
+		if ($siteName !== null && mb_strlen($siteName, 'UTF-8') > 64) {
 			throw new \InvalidArgumentException(
 				'The maximum length of the site name is 64 characters, '
 				. 'but "' . $siteName . '" given.',

@@ -7,7 +7,6 @@ namespace Baraja\Localization;
 
 use Nette\MemberAccessException;
 use Nette\SmartObject;
-use Nette\Utils\ObjectHelpers;
 
 trait TranslateObject
 {
@@ -24,7 +23,7 @@ trait TranslateObject
 	{
 		if (
 			property_exists($this, $name)
-			&& ObjectHelpers::hasProperty(static::class, $name) === 'event'
+			&& $this->hasProperty(static::class, $name) === 'event'
 		) {
 			if (is_iterable($this->$name)) {
 				foreach ($this->$name as $handler) {
@@ -134,5 +133,33 @@ trait TranslateObject
 		};
 
 		return $cache[$key] ?? $cache[$key] = $createReflection($this, $propertyName);
+	}
+
+
+	/**
+	 * Checks if the public non-static property exists.
+	 *
+	 * @return string|null returns 'event' if the property exists and has event like name
+	 */
+	private function hasProperty(string $class, string $name): ?string
+	{
+		static $cache;
+		$prop = &$cache[$class][$name];
+		if ($prop === null) {
+			try {
+				$rp = new \ReflectionProperty($class, $name);
+				if (
+					$name >= 'onA' && $name < 'on_'
+					&& $rp->isPublic()
+					&& !$rp->isStatic()
+				) {
+					$prop = 'event';
+				}
+			} catch (\ReflectionException) {
+				// Silence is golden.
+			}
+		}
+
+		return $prop;
 	}
 }

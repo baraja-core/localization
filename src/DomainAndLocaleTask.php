@@ -12,7 +12,6 @@ use Baraja\PackageManager\PackageRegistrator;
 use Doctrine\DBAL\Exception\TableNotFoundException;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
-use Nette\Utils\Random;
 
 /**
  * Priority: 90
@@ -199,13 +198,12 @@ final class DomainAndLocaleTask extends BaseTask
 		if ($entity->isBeta() === true && $this->ask('Use password to protect this beta domain?', ['y', 'n']) === 'y') {
 			$entity->setProtected(true);
 			if ($this->ask('Generate random password?', ['y', 'n']) === 'y') {
-				echo 'New password is: "' . ($password = Random::generate(16)) . '"' . "\n\n";
+				$password = $this->generateRandomPassword();
+				echo 'New password is: "' . $password . '"' . "\n\n";
 			} else {
 				do {
-					if (
-						($password = $this->ask('Please enter new password (5 characters is required):')) !== null
-						&& strlen($password) < 5
-					) {
+					$password = $this->ask('Please enter new password (5 characters is required):');
+					if ($password !== null && mb_strlen($password, 'UTF-8') < 5) {
 						Helpers::terminalRenderError('This is not good password. Please type again.');
 						$password = null;
 					}
@@ -488,5 +486,22 @@ final class DomainAndLocaleTask extends BaseTask
 
 		$this->entityManager->persist($domain);
 		$this->entityManager->flush();
+	}
+
+
+	private function generateRandomPassword(): string
+	{
+		$charlist = implode('', array_merge(range('a', 'z'), range('A', 'Z'), range('0', '9')));
+		$chLen = strlen($charlist);
+		if ($chLen < 2) {
+			throw new \LogicException('Character list must contain at least two chars.');
+		}
+
+		$res = '';
+		for ($i = 0; $i < 16; $i++) {
+			$res .= $charlist[random_int(0, $chLen - 1)];
+		}
+
+		return $res;
 	}
 }
