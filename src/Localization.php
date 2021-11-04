@@ -12,6 +12,7 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Nette\Caching\Cache;
 use Nette\Caching\Storage;
+use Nette\Caching\Storages\FileStorage;
 use Nette\Http\Request;
 use Nette\Http\Url;
 
@@ -34,8 +35,15 @@ final class Localization
 
 	public function __construct(
 		private EntityManagerInterface $entityManager,
-		Storage $storage
+		?Storage $storage = null
 	) {
+		if ($storage === null) {
+			$tempDir = sys_get_temp_dir() . '/localization/' . md5(__FILE__);
+			if (!is_dir($tempDir) && !@mkdir($tempDir, 0777, true) && !is_dir($tempDir)) { // @ - dir may already exist
+				throw new \RuntimeException(sprintf('Unable to create directory "%s".', $tempDir));
+			}
+			$storage = new FileStorage($tempDir);
+		}
 		$this->cache = new Cache($storage, 'baraja-localization');
 	}
 
