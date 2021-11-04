@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace Baraja\Localization;
 
 
-use Baraja\Doctrine\EntityManager;
 use Baraja\PackageManager\Composer\BaseTask;
 use Baraja\PackageManager\Helpers;
 use Baraja\PackageManager\PackageRegistrator;
 use Doctrine\DBAL\Exception\TableNotFoundException;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 
@@ -18,7 +19,7 @@ use Doctrine\ORM\NoResultException;
  */
 final class DomainAndLocaleTask extends BaseTask
 {
-	private EntityManager $entityManager;
+	private EntityManagerInterface $entityManager;
 
 
 	/**
@@ -35,8 +36,8 @@ final class DomainAndLocaleTask extends BaseTask
 		} catch (\Exception) {
 		}
 
-		/** @var EntityManager $em */
-		$em = $this->getContainer()->getByType(EntityManager::class);
+		/** @var EntityManagerInterface $em */
+		$em = $this->getContainer()->getByType(EntityManagerInterface::class);
 		$this->entityManager = $em;
 		echo 'Locales:' . "\n\n";
 
@@ -104,7 +105,7 @@ final class DomainAndLocaleTask extends BaseTask
 		$this->entityManager->flush();
 
 		/** @var Locale[] $allLocales */
-		$allLocales = $this->entityManager->getRepository(Locale::class)->findAll();
+		$allLocales = $this->getLocaleRepository()->findAll();
 
 		if (\count($allLocales) === 1) {
 			$entity->setDefault(true);
@@ -138,7 +139,7 @@ final class DomainAndLocaleTask extends BaseTask
 			}
 			try {
 				/** @var Domain $domainEntity */
-				$domainEntity = $this->entityManager->getRepository(Domain::class)
+				$domainEntity = $this->getDomainRepository()
 					->createQueryBuilder('domain')
 					->where('domain.domain = :domain')
 					->setParameter('domain', $domain)
@@ -164,7 +165,7 @@ final class DomainAndLocaleTask extends BaseTask
 		echo 'Creating "' . $domain . '"...' . "\n\n";
 
 		/** @var Locale[] $locales */
-		$locales = $this->entityManager->getRepository(Locale::class)
+		$locales = $this->getLocaleRepository()
 			->createQueryBuilder('locale')
 			->orderBy('locale.position', 'ASC')
 			->getQuery()
@@ -218,7 +219,7 @@ final class DomainAndLocaleTask extends BaseTask
 
 		if ($this->ask('Is "' . $domain . '" default domain for "' . $entity->getEnvironment() . '" and "' . $entity->getLocale() . '"?', ['y', 'n']) === 'y') {
 			/** @var Domain[] $domainsInEnvironmentAndLocale */
-			$domainsInEnvironmentAndLocale = $this->entityManager->getRepository(Domain::class)
+			$domainsInEnvironmentAndLocale = $this->getDomainRepository()
 				->createQueryBuilder('domain')
 				->leftJoin('domain.locale', 'locale')
 				->where('domain.environment = :environment')
@@ -257,7 +258,7 @@ final class DomainAndLocaleTask extends BaseTask
 	{
 		try {
 			/** @phpstan-ignore-next-line */
-			return $this->entityManager->getRepository(Locale::class)
+			return $this->getLocaleRepository()
 				->createQueryBuilder('locale')
 				->select('PARTIAL locale.{id, locale, default, active, position, insertedDate}')
 				->orderBy('locale.default', 'DESC')
@@ -330,7 +331,7 @@ final class DomainAndLocaleTask extends BaseTask
 		 *     locale: array{id: int, locale: string}|null
 		 * }> $domains
 		 */
-		$domains = $this->entityManager->getRepository(Domain::class)
+		$domains = $this->getDomainRepository()
 			->createQueryBuilder('domain')
 			->select('PARTIAL domain.{id, environment, https, www, protectedPassword, protected, default, insertedDate, updatedDate, domain}')
 			->addSelect('PARTIAL locale.{id, locale}')
@@ -387,7 +388,7 @@ final class DomainAndLocaleTask extends BaseTask
 	{
 		if ($locales === null) {
 			/** @var Locale[] $locales */
-			$locales = $this->entityManager->getRepository(Locale::class)
+			$locales = $this->getLocaleRepository()
 				->createQueryBuilder('locale')
 				->orderBy('locale.position', 'ASC')
 				->getQuery()
@@ -431,7 +432,7 @@ final class DomainAndLocaleTask extends BaseTask
 
 			// Use natural position sorting
 			/** @var Locale[] $locales */
-			$locales = $this->entityManager->getRepository(Locale::class)
+			$locales = $this->getLocaleRepository()
 				->createQueryBuilder('locale')
 				->orderBy('locale.position', 'ASC')
 				->getQuery()
@@ -452,7 +453,7 @@ final class DomainAndLocaleTask extends BaseTask
 	private function createDefaultLocalhost(): void
 	{
 		try {
-			$this->entityManager->getRepository(Domain::class)
+			$this->getDomainRepository()
 				->createQueryBuilder('domain')
 				->where('domain.domain = :domain')
 				->setParameter('domain', 'localhost')
@@ -465,7 +466,7 @@ final class DomainAndLocaleTask extends BaseTask
 
 		try {
 			/** @var Locale $defaultLocale */
-			$defaultLocale = $this->entityManager->getRepository(Locale::class)
+			$defaultLocale = $this->getLocaleRepository()
 				->createQueryBuilder('locale')
 				->where('locale.default = true')
 				->setMaxResults(1)
@@ -503,5 +504,23 @@ final class DomainAndLocaleTask extends BaseTask
 		}
 
 		return $res;
+	}
+
+
+	private function getLocaleRepository(): EntityRepository
+	{
+		return new EntityRepository(
+			$this->entityManager,
+			$this->entityManager->getClassMetadata(Locale::class)
+		);
+	}
+
+
+	private function getDomainRepository(): EntityRepository
+	{
+		return new EntityRepository(
+			$this->entityManager,
+			$this->entityManager->getClassMetadata(Domain::class)
+		);
 	}
 }

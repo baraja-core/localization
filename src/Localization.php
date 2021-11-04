@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace Baraja\Localization;
 
 
-use Baraja\Doctrine\EntityManager;
 use Doctrine\DBAL\Exception\TableNotFoundException;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Nette\Caching\Cache;
@@ -32,7 +33,7 @@ final class Localization
 
 
 	public function __construct(
-		private EntityManager $entityManager,
+		private EntityManagerInterface $entityManager,
 		Storage $storage
 	) {
 		$this->cache = new Cache($storage, 'baraja-localization');
@@ -255,7 +256,10 @@ final class Localization
 	 */
 	public function getLocaleEntity(string $locale): Locale
 	{
-		$return = $this->entityManager->getRepository(Locale::class)
+		$return = (new EntityRepository(
+			$this->entityManager,
+			$this->entityManager->getClassMetadata(Locale::class)
+		))
 			->createQueryBuilder('locale')
 			->where('locale.locale = :locale')
 			->setParameter('locale', $locale)
@@ -303,7 +307,10 @@ final class Localization
 
 		try {
 			/** @var array<int, array{id: int, locale: array{id: int, locale: string}|null, domain: string, environment: string, protected: bool, https: bool, www: bool, default: bool}>}> $domains */
-			$domains = $this->entityManager->getRepository(Domain::class)
+			$domains = (new EntityRepository(
+				$this->entityManager,
+				$this->entityManager->getClassMetadata(Domain::class)
+			))
 				->createQueryBuilder('domain')
 				->select('domain, locale')
 				->leftJoin('domain.locale', 'locale')
@@ -341,7 +348,10 @@ final class Localization
 		}
 
 		/** @var array<int, array{id: int, locale: string, default: bool, titleSuffix: string|null, titleSeparator: string|null, titleFormat: string|null, siteName: string|null}> $locales */
-		$locales = $this->entityManager->getRepository(Locale::class)
+		$locales = (new EntityRepository(
+			$this->entityManager,
+			$this->entityManager->getClassMetadata(Locale::class)
+		))
 			->createQueryBuilder('locale')
 			->select('PARTIAL locale.{id, locale, default, titleSuffix, titleSeparator, titleFormat, siteName}')
 			->where('locale.active = TRUE')

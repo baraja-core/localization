@@ -29,8 +29,12 @@ final class LocalizationExtension extends CompilerExtension
 	{
 		$builder = $this->getContainerBuilder();
 
-		OrmAnnotationsExtension::addAnnotationPathToManager($builder, 'Baraja\Localization', __DIR__ . '/Entity');
-		DatabaseExtension::addCustomType('translate', TranslateType::class);
+		if (class_exists(OrmAnnotationsExtension::class)) {
+			OrmAnnotationsExtension::addAnnotationPathToManager($builder, 'Baraja\Localization', __DIR__ . '/Entity');
+		}
+		if (class_exists(DatabaseExtension::class)) {
+			DatabaseExtension::addCustomType('translate', TranslateType::class);
+		}
 
 		$builder->addDefinition($this->prefix('localization'))
 			->setFactory(Localization::class)
