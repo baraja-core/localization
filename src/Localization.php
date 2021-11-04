@@ -222,24 +222,7 @@ final class Localization
 		if ($this->status !== null) {
 			return $this->status;
 		}
-		/**
-		 * @var null|array{
-		 *     availableLocales: array<int, string>,
-		 *     defaultLocale: string,
-		 *     fallbackLocales: array<string, array<int, string>>,
-		 *     localeToTitleSuffix: array<string, string|null>,
-		 *     localeToTitleSeparator: array<string, string|null>,
-		 *     localeToTitleFormat: array<string, string|null>,
-		 *     localeToSiteName: array<string, string|null>,
-		 *     domainToLocale: array<string, string>,
-		 *     domainToEnvironment: array<string, string>,
-		 *     domainToProtected: array<string, bool>,
-		 *     domainToScheme: array<string, string>,
-		 *     domainToUseWww: array<string, bool>,
-		 *     domainByEnvironment: array<string, array<string, string>>,
-		 *     domains: array<int, array{id: int, locale: array{id: int, locale: string}|null, domain: string, environment: string, protected: bool, https: bool, www: bool, default: bool}>}>
-		 * } $config
-		 */
+		/** @var array{availableLocales: array<int, string>, defaultLocale: string, fallbackLocales: array<string, array<int, string>>, localeToTitleSuffix: array<string, (string|null)>, localeToTitleSeparator: array<string, (string|null)>, localeToTitleFormat: array<string, (string|null)>, localeToSiteName: array<string, (string|null)>, domainToLocale: array<string, string>, domainToEnvironment: array<string, string>, domainToProtected: array<string, bool>, domainToScheme: array<string, string>, domainToUseWww: array<string, bool>, domainByEnvironment: array<string, array<string, string>>, domains: array<int, array{id: int, locale: (array{id: int, locale: string}|null), domain: string, environment: string, protected: bool, https: bool, www: bool, default: bool}>}|null $config */
 		$config = $this->cache->load('configuration');
 		if ($config === null) {
 			$config = $this->createCache();
