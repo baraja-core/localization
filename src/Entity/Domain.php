@@ -8,10 +8,8 @@ namespace Baraja\Localization;
 use Baraja\Doctrine\UUID\UuidIdentifier;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity()
- * @ORM\Table(name="core__localization_domain")
- */
+#[ORM\Entity]
+#[ORM\Table(name: 'core__localization_domain')]
 class Domain
 {
 	use UuidIdentifier;
@@ -27,40 +25,39 @@ class Domain
 		self::ENVIRONMENT_PRODUCTION,
 	];
 
-	/** @ORM\Column(type="boolean") */
+	#[ORM\Column(type: 'boolean')]
 	private bool $https = false;
 
-	/** @ORM\Column(type="string", unique=true) */
+	#[ORM\Column(type: 'string', unique: true)]
 	private string $domain;
 
-	/** @ORM\Column(type="boolean", name="`is_www`") */
+	#[ORM\Column(name: 'is_www', type: 'boolean')]
 	private bool $www = false;
 
-	/** @ORM\ManyToOne(targetEntity="\Baraja\Localization\Locale", inversedBy="domains") */
+	#[ORM\ManyToOne(targetEntity: Locale::class, inversedBy: 'domains')]
 	private ?Locale $locale;
 
 	/**
 	 * Value is constant of Domain::ENVIRONMENT_*
 	 * Possible values: "localhost", "beta", "production".
-	 *
-	 * @ORM\Column(type="string", length=10)
 	 */
+	#[ORM\Column(type: 'string', length: 10)]
 	private string $environment;
 
-	/** @ORM\Column(type="boolean", name="`is_default`") */
+	#[ORM\Column(name: 'is_default', type: 'boolean')]
 	private bool $default = false;
 
-	/** @ORM\Column(type="string", nullable=true) */
+	#[ORM\Column(type: 'string', nullable: true)]
 	private ?string $protectedPassword;
 
-	/** @ORM\Column(type="boolean", name="`is_protected`") */
+	#[ORM\Column(name: 'is_protected', type: 'boolean')]
 	private bool $protected = true;
 
-	/** @ORM\Column(type="datetime") */
-	private \DateTime $insertedDate;
+	#[ORM\Column(type: 'datetime_immutable')]
+	private \DateTimeImmutable $insertedDate;
 
-	/** @ORM\Column(type="datetime") */
-	private \DateTime $updatedDate;
+	#[ORM\Column(type: 'datetime_immutable')]
+	private \DateTimeImmutable $updatedDate;
 
 
 	public function __construct(string $domain, Locale $locale, string $environment = self::ENVIRONMENT_BETA)
@@ -68,8 +65,8 @@ class Domain
 		$this->setDomain($domain);
 		$this->locale = $locale;
 		$this->setEnvironment($environment);
-		$this->insertedDate = new \DateTime('now');
-		$this->updatedDate = new \DateTime('now');
+		$this->insertedDate = new \DateTimeImmutable('now');
+		$this->updatedDate = new \DateTimeImmutable('now');
 	}
 
 
@@ -108,12 +105,10 @@ class Domain
 	public function setDomain(string $domain): void
 	{
 		if ($domain !== 'localhost' && !preg_match('/^(?:[-A-Za-z0-9]+\.)+[A-Za-z]{2,6}$/', $domain)) {
-			throw new \InvalidArgumentException('Domain "' . $domain . '" is not in valid format.');
+			throw new \InvalidArgumentException(sprintf('Domain "%s" is not in valid format.', $domain));
 		}
 		if (strlen($domain) > 255) {
-			throw new \InvalidArgumentException(
-				'The maximum length of the domain is 8 characters, but "' . $domain . '" given.',
-			);
+			throw new \InvalidArgumentException(sprintf('The maximum length of the domain is 8 characters, but "%s" given.', $domain));
 		}
 
 		$this->domain = $domain;
@@ -154,10 +149,10 @@ class Domain
 	public function getEnvironment(): string
 	{
 		if (\in_array($this->environment, self::ENVIRONMENTS, true) === false) {
-			throw new \RuntimeException(
-				'Environment "' . $this->environment . '" is invalid. '
-				. 'Please fix broken database record.',
-			);
+			throw new \RuntimeException(sprintf(
+				'Environment "%s" is invalid. Please fix broken database record.',
+				$this->environment,
+			));
 		}
 
 		return $this->environment;
@@ -167,10 +162,11 @@ class Domain
 	public function setEnvironment(string $environment): void
 	{
 		if (\in_array($environment, self::ENVIRONMENTS, true) === false) {
-			throw new \InvalidArgumentException(
-				'Environment "' . $environment . '" must be in '
-				. '"' . implode('", "', self::ENVIRONMENTS) . '".',
-			);
+			throw new \InvalidArgumentException(sprintf(
+				'Environment "%s" must be in "%s".',
+				$environment,
+				implode('", "', self::ENVIRONMENTS),
+			));
 		}
 
 		$this->environment = $environment;
@@ -213,10 +209,11 @@ class Domain
 		if ($protectedPassword !== null) {
 			$hash = (string) @password_hash($protectedPassword, PASSWORD_DEFAULT, []); // @ is escalated to exception
 			if ($hash === '') {
-				throw new \LogicException(
-					'Computed hash for input "' . $protectedPassword . '" is invalid: '
-					. (error_get_last()['message'] ?? ''),
-				);
+				throw new \LogicException(sprintf(
+					'Computed hash for input "%s" is invalid: %s',
+					$protectedPassword,
+					error_get_last()['message'] ?? '',
+				));
 			}
 			$protectedPassword = $hash;
 		}
@@ -256,13 +253,13 @@ class Domain
 	}
 
 
-	public function getInsertedDate(): \DateTime
+	public function getInsertedDate(): \DateTimeImmutable
 	{
 		return $this->insertedDate;
 	}
 
 
-	public function getUpdatedDate(): \DateTime
+	public function getUpdatedDate(): \DateTimeImmutable
 	{
 		return $this->updatedDate;
 	}
@@ -270,6 +267,6 @@ class Domain
 
 	private function setUpdatedDate(): void
 	{
-		$this->updatedDate = new \DateTime('now');
+		$this->updatedDate = new \DateTimeImmutable('now');
 	}
 }

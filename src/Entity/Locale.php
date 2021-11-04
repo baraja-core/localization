@@ -11,51 +11,43 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
 
-/**
- * @ORM\Entity()
- * @ORM\Table(
- *     name="core__localization_locale",
- *     indexes={
- *         @Index(name="locale__locale_id", columns={"locale", "id"}),
- *         @Index(name="locale__active", columns={"active"})
- *     }
- * )
- */
-class Locale
+#[ORM\Entity]
+#[ORM\Table(name: 'core__localization_locale')]
+#[Index(columns: ['locale', 'id'], name: 'locale__locale_id')]
+#[Index(columns: ['active'], name: 'locale__active')]
+class Locale implements \Stringable
 {
 	use UuidIdentifier;
 
-	/** @ORM\Column(type="string", unique=true, length=2) */
+	#[ORM\Column(type: 'string', length: 2, unique: true)]
 	private string $locale;
 
-	/** @ORM\Column(type="boolean") */
+	#[ORM\Column(type: 'boolean')]
 	private bool $active = true;
 
-	/** @ORM\Column(type="boolean", name="`is_default`") */
+	#[ORM\Column(name: 'is_default', type: 'boolean')]
 	private bool $default = false;
 
-	/** @ORM\Column(type="smallint") */
+	#[ORM\Column(type: 'smallint')]
 	private int $position = 1;
 
-	/** @ORM\Column(type="datetime_immutable") */
+	#[ORM\Column(type: 'datetime_immutable')]
 	private \DateTimeImmutable $insertedDate;
 
-	/**
-	 * @var Domain[]|Collection
-	 * @ORM\OneToMany(targetEntity="Domain", mappedBy="locale")
-	 */
+	/** @var Domain[]|Collection */
+	#[ORM\OneToMany(mappedBy: 'locale', targetEntity: Domain::class)]
 	private $domains;
 
-	/** @ORM\Column(type="string", length=64, nullable=true) */
+	#[ORM\Column(type: 'string', length: 64, nullable: true)]
 	private ?string $titleSuffix;
 
-	/** @ORM\Column(type="string", length=8, nullable=true) */
+	#[ORM\Column(type: 'string', length: 8, nullable: true)]
 	private ?string $titleSeparator;
 
-	/** @ORM\Column(type="string", length=64, nullable=true) */
+	#[ORM\Column(type: 'string', length: 64, nullable: true)]
 	private ?string $titleFormat;
 
-	/** @ORM\Column(type="string", length=64, nullable=true) */
+	#[ORM\Column(type: 'string', length: 64, nullable: true)]
 	private ?string $siteName;
 
 
@@ -137,10 +129,10 @@ class Locale
 	public function setTitleSuffix(?string $titleSuffix): void
 	{
 		if ($titleSuffix !== null && mb_strlen($titleSuffix, 'UTF-8') > 64) {
-			throw new \InvalidArgumentException(
-				'The maximum length of the title suffix is 64 characters, '
-				. 'but "' . $titleSuffix . '" given.',
-			);
+			throw new \InvalidArgumentException(sprintf(
+				'The maximum length of the title suffix is 64 characters, but "%s" given.',
+				$titleSuffix,
+			));
 		}
 
 		$this->titleSuffix = trim($titleSuffix ?? '') ?: null;
@@ -156,10 +148,10 @@ class Locale
 	public function setTitleSeparator(?string $titleSeparator): void
 	{
 		if ($titleSeparator !== null && mb_strlen($titleSeparator, 'UTF-8') > 8) {
-			throw new \InvalidArgumentException(
-				'The maximum length of the title separator is 8 characters, '
-				. 'but "' . $titleSeparator . '" given.',
-			);
+			throw new \InvalidArgumentException(sprintf(
+				'The maximum length of the title separator is 8 characters, but "%s" given.',
+				$titleSeparator,
+			));
 		}
 
 		$this->titleSeparator = trim($titleSeparator ?? '') ?: null;
@@ -175,10 +167,10 @@ class Locale
 	public function setTitleFormat(?string $titleFormat): void
 	{
 		if ($titleFormat !== null && mb_strlen($titleFormat, 'UTF-8') > 64) {
-			throw new \InvalidArgumentException(
-				'The maximum length of the title format is 64 characters, '
-				. 'but "' . $titleFormat . '" given.',
-			);
+			throw new \InvalidArgumentException(sprintf(
+				'The maximum length of the title format is 64 characters, but "%s" given.',
+				$titleFormat,
+			));
 		}
 
 		$this->titleFormat = trim($titleFormat ?? '') ?: null;
@@ -194,10 +186,10 @@ class Locale
 	public function setSiteName(?string $siteName): void
 	{
 		if ($siteName !== null && mb_strlen($siteName, 'UTF-8') > 64) {
-			throw new \InvalidArgumentException(
-				'The maximum length of the site name is 64 characters, '
-				. 'but "' . $siteName . '" given.',
-			);
+			throw new \InvalidArgumentException(sprintf(
+				'The maximum length of the site name is 64 characters, but "%s" given.',
+				$siteName,
+			));
 		}
 
 		$this->siteName = trim($siteName ?? '') ?: null;
