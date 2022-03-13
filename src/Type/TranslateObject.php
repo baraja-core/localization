@@ -33,10 +33,10 @@ trait TranslateObject
 
 			return null;
 		}
-		if (preg_match('/^(?:get|is)([A-Z].*)$/', $name, $getter)) {
+		if (preg_match('/^(?:get|is)([A-Z].*)$/', $name, $getter) === 1) {
 			return $this->{$this->firstLower($getter[1])};
 		}
-		if (preg_match('/^set([A-Z].*)$/', $name, $setter)) {
+		if (preg_match('/^set([A-Z].*)$/', $name, $setter) === 1) {
 			$propertyName = $this->firstLower($setter[1]);
 			$this->{$propertyName} = $this->createTranslationEntity(
 				value: $args[0] ?? null,

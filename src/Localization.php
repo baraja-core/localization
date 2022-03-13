@@ -51,9 +51,9 @@ final class Localization
 	public static function normalize(string $locale): string
 	{
 		$locale = strtolower(trim($locale));
-		if (!preg_match('/^[a-z]{2}$/', $locale)) {
+		if (preg_match('/^[a-z]{2}$/', $locale) !== 1) {
 			throw new \InvalidArgumentException(
-				'Locale "' . $locale . '" is invalid, because it must be 2 [a-z] characters.'
+				sprintf('Locale "%s" is invalid, because it must be 2 [a-z] characters.', $locale)
 				. "\n" . 'To solve this issue: Use alphabet locale like "en", "de", "cs".',
 			);
 		}
@@ -94,9 +94,11 @@ final class Localization
 		if ($locale === null) {
 			throw new LocalizationException(
 				'Can not resolve current locale. Explored inputs:' . "\n"
-				. 'Defined: "' . ($this->localeDefined ?? 'null') . '", '
-				. 'URL parameter: "' . ($this->localeParameter ?? 'null') . '", '
-				. 'domain: "' . ($this->localeDomain ?? 'null') . '".' . "\n"
+				. sprintf('Defined: "%s", URL parameter: "%s", domain: "%s".',
+					$this->localeDefined ?? 'null',
+					$this->localeParameter ?? 'null',
+					$this->localeDomain ?? 'null',
+				) . "\n"
 				. 'Did you defined default locale for all domains or use router rewriting?',
 			);
 		}

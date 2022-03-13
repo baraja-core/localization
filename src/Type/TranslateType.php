@@ -44,9 +44,7 @@ final class TranslateType extends Type
 			return (new Translation($value))->getSerialize();
 		}
 
-		throw new LocalizationException(
-			'Language data must be Translation entity, but type "' . get_debug_type($value) . '" given.',
-		);
+		throw new LocalizationException(sprintf('Language data must be Translation entity, but type "%s" given.', get_debug_type($value)));
 	}
 
 

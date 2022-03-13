@@ -89,7 +89,7 @@ final class DomainAndLocaleTask extends BaseTask
 		$locale = null;
 		for ($ttl = 8; $ttl > 0; $ttl--) {
 			$locale = strtolower($this->ask('Locale code (2 characters):') ?? '');
-			if ($locale === '' || preg_match('/^[a-z]{2}$/', $locale) === 0) {
+			if ($locale === '' || preg_match('/^[a-z]{2}$/', $locale) !== 1) {
 				Helpers::terminalRenderError('Locale "' . $locale . '" is invalid. Please type 2 lower characters (a-z).');
 				$locale = null;
 			} else {
@@ -129,7 +129,7 @@ final class DomainAndLocaleTask extends BaseTask
 				$domain = $this->ask('What is your domain name? Keep empty for "localhost":');
 				if ($domain !== null) {
 					$domain = str_replace('www.', '', $domain);
-					if (preg_match('/^(?!-)(?:(?:[a-zA-Z\d][a-zA-Z\d\-]{0,61})?[a-zA-Z\d]\.){1,126}(?!\d+)[a-zA-Z\d]{1,63}$/', $domain)) {
+					if (preg_match('/^(?!-)(?:(?:[a-zA-Z\d][a-zA-Z\d\-]{0,61})?[a-zA-Z\d]\.){1,126}(?!\d+)[a-zA-Z\d]{1,63}$/', $domain) === 1) {
 						break;
 					}
 					Helpers::terminalRenderError('Domain "' . $domain . '" is invalid. Use format "baraja.cz" for example.');

@@ -7,11 +7,11 @@ namespace Baraja\Localization;
 
 final class Translation
 {
-	/** @var array<string, string>|null */
-	private ?array $storage = null;
+	/** @var array<string, string> */
+	private array $storage = [];
 
-	/** @var array<string, string>|null */
-	private ?array $startupState = null;
+	/** @var array<string, string> */
+	private array $startupState = [];
 
 
 	/**
@@ -20,22 +20,16 @@ final class Translation
 	public function __construct(?string $data, ?string $language = null)
 	{
 		if ($data !== null && str_starts_with($data, 'T:{')) {
-			$json = (string) preg_replace(
-				'/^T:/',
-				'',
-				str_replace(
-					"\n",
-					'\n',
-					str_replace(["\r\n", "\r"], "\n", $data),
-				),
-			);
+			$data = str_replace(["\r\n", "\r"], "\n", $data);
+			$normalize = str_replace("\n", '\n', $data);
+			$json = (string) preg_replace('/^T:/', '', $normalize);
 			$flags = JSON_BIGINT_AS_STRING;
 
 			if (PHP_VERSION_ID < 70_000) {
 				if ($json === '') {
 					throw new LocalizationException('Syntax error:' . "\nJson: " . $json . "\n\nOriginal data:\n" . $data);
 				}
-				if (\defined('JSON_C_VERSION') && !preg_match('##u', $json)) {
+				if (\defined('JSON_C_VERSION') && preg_match('##u', $json) !== 1) {
 					throw new LocalizationException('Invalid UTF-8 sequence:' . "\n" . $data, 5);
 				}
 				if (\defined('JSON_C_VERSION') && PHP_INT_SIZE === 8) {
@@ -82,24 +76,21 @@ final class Translation
 		if ($language === null) {
 			$language = LocalizationHelper::getLocale(true);
 		}
-		if (\is_array($this->storage) === false) {
-			return '#INVALID_DATA#';
+		if ($this->storage === []) {
+			throw new \LogicException('Storage has not been set or is empty.');
 		}
 		if (isset($this->storage[$language]) === true) {
 			return $this->storage[$language];
 		}
 		if ($fallback === true) {
 			$fallbackLanguages = LocalizationHelper::getFallbackLocales();
-			if (isset($fallbackLanguages[$language]) === true) {
-				foreach ($fallbackLanguages[$language] as $fallbackLanguage) {
-					if (isset($this->storage[$fallbackLanguage]) === true) {
-						return $this->storage[$fallbackLanguage];
-					}
+			foreach ($fallbackLanguages[$language] ?? [] as $fallbackLanguage) {
+				if (isset($this->storage[$fallbackLanguage]) === true) {
+					return $this->storage[$fallbackLanguage];
 				}
 			}
-			if (\is_array($this->storage) === true) {
-				return $this->storage[array_keys($this->storage)[0]];
-			}
+
+			return $this->storage[array_keys($this->storage)[0]];
 		}
 
 		return '#NO_DATA#';
@@ -137,18 +128,18 @@ final class Translation
 
 
 	/**
-	 * @return string[]|null
+	 * @return array<string, string>
 	 */
-	public function getStartupState(): ?array
+	public function getStartupState(): array
 	{
 		return $this->startupState;
 	}
 
 
 	/**
-	 * @return string[]|null
+	 * @return array<string, string>
 	 */
-	public function getStorage(): ?array
+	public function getStorage(): array
 	{
 		return $this->storage;
 	}
