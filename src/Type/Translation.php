@@ -56,8 +56,11 @@ final class Translation
 					$language = LocalizationHelper::getLocale(true);
 				}
 			}
-
-			$this->storage[$language] = $data;
+			if ($data !== null) {
+				$this->storage[$language] = $data;
+			} elseif (isset($this->storage[$language])) {
+				unset($this->storage[$language]);
+			}
 		}
 	}
 
@@ -102,11 +105,16 @@ final class Translation
 		if ($language === null) {
 			$language = LocalizationHelper::getLocale(true);
 		}
-		if (isset($this->storage[$language]) === true && $this->storage[$language] === $haystack) {
-			return false;
+		if (isset($this->storage[$language]) === true) {
+			if ($haystack === null) {
+				unset($this->storage[$language]);
+			} elseif ($this->storage[$language] === $haystack) {
+				return false;
+			}
 		}
-
-		$this->storage[$language] = $haystack;
+		if ($haystack !== null) {
+			$this->storage[$language] = $haystack;
+		}
 
 		return true;
 	}
