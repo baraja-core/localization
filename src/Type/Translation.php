@@ -8,7 +8,7 @@ namespace Baraja\Localization;
 final class Translation
 {
 	/** @var array<string, string> */
-	private array $storage = [];
+	private array $storage;
 
 	/** @var array<string, string> */
 	private array $startupState = [];
@@ -19,7 +19,10 @@ final class Translation
 	 */
 	public function __construct(?string $data, ?string $language = null)
 	{
-		if ($data !== null && str_starts_with($data, 'T:{')) {
+		if ($data === null) {
+			return;
+		}
+		if (str_starts_with($data, 'T:{')) { // format T:{"locale":"haystack"}
 			$data = str_replace(["\r\n", "\r"], "\n", $data);
 			$normalize = str_replace("\n", '\n', $data);
 			$json = (string) preg_replace('/^T:/', '', $normalize);
@@ -48,19 +51,13 @@ final class Translation
 
 			$this->storage = $storageData;
 			$this->startupState = $storageData;
-		} else {
+		} else { // back compatibility for pure string
 			if ($language === null) {
-				if (PHP_SAPI === 'cli') {
-					$language = LocalizationHelper::getLocalization()->getDefaultLocale();
-				} else {
-					$language = LocalizationHelper::getLocale(true);
-				}
+				$language = PHP_SAPI === 'cli'
+					? LocalizationHelper::getLocalization()->getDefaultLocale()
+					: LocalizationHelper::getLocale(true);
 			}
-			if ($data !== null) {
-				$this->storage[$language] = $data;
-			} elseif (isset($this->storage[$language])) {
-				unset($this->storage[$language]);
-			}
+			$this->storage = [$language => $data];
 		}
 	}
 
@@ -76,11 +73,11 @@ final class Translation
 	 */
 	public function getTranslation(?string $language = null, bool $fallback = true): ?string
 	{
+		if (isset($this->storage) === false) {
+			return null;
+		}
 		if ($language === null) {
 			$language = LocalizationHelper::getLocale(true);
-		}
-		if ($this->storage === []) {
-			throw new \LogicException('Storage has not been set or is empty.');
 		}
 		if (isset($this->storage[$language]) === true) {
 			return $this->storage[$language];
@@ -113,6 +110,9 @@ final class Translation
 			}
 		}
 		if ($haystack !== null) {
+			if (isset($this->storage) === false) {
+				$this->storage = [];
+			}
 			$this->storage[$language] = $haystack;
 		}
 
@@ -128,7 +128,7 @@ final class Translation
 	public function getSerialize(): string
 	{
 		return 'T:' . json_encode(
-			$this->storage,
+			$this->storage ?? [],
 			JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
 				| (\defined('JSON_PRESERVE_ZERO_FRACTION') ? JSON_PRESERVE_ZERO_FRACTION : 0),
 		);
@@ -149,7 +149,17 @@ final class Translation
 	 */
 	public function getStorage(): array
 	{
-		return $this->storage;
+		return $this->storage ?? [];
+	}
+
+
+	/**
+	 * It detects if storage has been set up and exists.
+	 * If it returns `false`, it is probably a corrupted translation string.
+	 */
+	public function isStorage(): bool
+	{
+		return isset($this->storage);
 	}
 
 
