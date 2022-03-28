@@ -56,7 +56,7 @@ final class Localization
 	public static function normalize(string $locale): string
 	{
 		$locale = strtolower(trim($locale));
-		if (preg_match('/^[a-z]{2}(-[a-z]{2})?$/', $locale, $localeParser) === 1) {
+		if (preg_match('/^([a-z]{2})(?:-([a-z]{2}))?$/', $locale, $localeParser) === 1) {
 			return $localeParser[1];
 		}
 
