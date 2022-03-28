@@ -48,17 +48,22 @@ final class Localization
 	}
 
 
+	/**
+	 * de: German language content, independent of region
+	 * en-GB: English language content, for GB users
+	 * de-ES: German language content, for users in Spain
+	 */
 	public static function normalize(string $locale): string
 	{
 		$locale = strtolower(trim($locale));
-		if (preg_match('/^[a-z]{2}$/', $locale) !== 1) {
-			throw new \InvalidArgumentException(
-				sprintf('Locale "%s" is invalid, because it must be 2 [a-z] characters.', $locale)
-				. "\n" . 'To solve this issue: Use alphabet locale like "en", "de", "cs".',
-			);
+		if (preg_match('/^[a-z]{2}(-[a-z]{2})?$/', $locale, $localeParser) === 1) {
+			return $localeParser[1];
 		}
 
-		return $locale;
+		throw new \InvalidArgumentException(
+			sprintf('Locale "%s" is invalid, because it must be 2 [a-z] characters.', $locale)
+			. "\n" . 'To solve this issue: Use alphabet locale like "en", "de", "cs".',
+		);
 	}
 
 
