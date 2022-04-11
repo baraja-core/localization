@@ -78,7 +78,7 @@ final class LocalizationStatus
 		array $domainToScheme,
 		array $domainToUseWww,
 		array $domainByEnvironment,
-		array $domains
+		array $domains,
 	) {
 		$this->availableLocales = $availableLocales;
 		$this->defaultLocale = $defaultLocale;

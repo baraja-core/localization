@@ -35,7 +35,7 @@ final class Localization
 
 	public function __construct(
 		private EntityManagerInterface $entityManager,
-		?Storage $storage = null
+		?Storage $storage = null,
 	) {
 		if ($storage === null) {
 			$tempDir = sys_get_temp_dir() . '/localization/' . md5(__FILE__);
@@ -99,7 +99,8 @@ final class Localization
 		if ($locale === null) {
 			throw new LocalizationException(
 				'Can not resolve current locale. Explored inputs:' . "\n"
-				. sprintf('Defined: "%s", URL parameter: "%s", domain: "%s".',
+				. sprintf(
+					'Defined: "%s", URL parameter: "%s", domain: "%s".',
 					$this->localeDefined ?? 'null',
 					$this->localeParameter ?? 'null',
 					$this->localeDomain ?? 'null',
@@ -273,7 +274,7 @@ final class Localization
 	{
 		$return = (new EntityRepository(
 			$this->entityManager,
-			$this->entityManager->getClassMetadata(Locale::class)
+			$this->entityManager->getClassMetadata(Locale::class),
 		))
 			->createQueryBuilder('locale')
 			->where('locale.locale = :locale')
@@ -324,7 +325,7 @@ final class Localization
 			/** @var array<int, array{id: int, locale: array{id: int, locale: string}|null, domain: string, environment: string, protected: bool, https: bool, www: bool, default: bool}>}> $domains */
 			$domains = (new EntityRepository(
 				$this->entityManager,
-				$this->entityManager->getClassMetadata(Domain::class)
+				$this->entityManager->getClassMetadata(Domain::class),
 			))
 				->createQueryBuilder('domain')
 				->select('domain, locale')
@@ -365,7 +366,7 @@ final class Localization
 		/** @var array<int, array{id: int, locale: string, default: bool, titleSuffix: string|null, titleSeparator: string|null, titleFormat: string|null, siteName: string|null}> $locales */
 		$locales = (new EntityRepository(
 			$this->entityManager,
-			$this->entityManager->getClassMetadata(Locale::class)
+			$this->entityManager->getClassMetadata(Locale::class),
 		))
 			->createQueryBuilder('locale')
 			->select('PARTIAL locale.{id, locale, default, titleSuffix, titleSeparator, titleFormat, siteName}')

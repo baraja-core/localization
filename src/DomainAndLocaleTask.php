@@ -494,7 +494,6 @@ final class DomainAndLocaleTask extends BaseTask
 	{
 		$charList = implode('', array_merge(range('a', 'z'), range('A', 'Z'), range('0', '9')));
 		$chLen = strlen($charList);
-		assert($chLen > 2);
 
 		$res = '';
 		for ($i = 0; $i < 16; $i++) {
@@ -509,7 +508,7 @@ final class DomainAndLocaleTask extends BaseTask
 	{
 		return new EntityRepository(
 			$this->entityManager,
-			$this->entityManager->getClassMetadata(Locale::class)
+			$this->entityManager->getClassMetadata(Locale::class),
 		);
 	}
 
@@ -518,7 +517,7 @@ final class DomainAndLocaleTask extends BaseTask
 	{
 		return new EntityRepository(
 			$this->entityManager,
-			$this->entityManager->getClassMetadata(Domain::class)
+			$this->entityManager->getClassMetadata(Domain::class),
 		);
 	}
 }
