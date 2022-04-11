@@ -492,15 +492,13 @@ final class DomainAndLocaleTask extends BaseTask
 
 	private function generateRandomPassword(): string
 	{
-		$charlist = implode('', array_merge(range('a', 'z'), range('A', 'Z'), range('0', '9')));
-		$chLen = strlen($charlist);
-		if ($chLen < 2) {
-			throw new \LogicException('Character list must contain at least two chars.');
-		}
+		$charList = implode('', array_merge(range('a', 'z'), range('A', 'Z'), range('0', '9')));
+		$chLen = strlen($charList);
+		assert($chLen > 2);
 
 		$res = '';
 		for ($i = 0; $i < 16; $i++) {
-			$res .= $charlist[random_int(0, $chLen - 1)];
+			$res .= $charList[random_int(0, $chLen - 1)];
 		}
 
 		return $res;
