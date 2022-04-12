@@ -22,7 +22,7 @@ final class Translation
 		if ($data === null) {
 			return;
 		}
-		if (str_starts_with($data, 'T:{')) { // format T:{"locale":"haystack"}
+		if ($data === 'T:[]' || str_starts_with($data, 'T:{')) { // format T:{"locale":"haystack"}
 			$data = str_replace(["\r\n", "\r"], "\n", $data);
 			$normalize = str_replace("\n", '\n', $data);
 			$json = (string) preg_replace('/^T:/', '', $normalize);
@@ -90,7 +90,7 @@ final class Translation
 				}
 			}
 
-			return $this->storage[array_keys($this->storage)[0]];
+			return $this->storage[array_keys($this->storage)[0] ?? ''] ?? null;
 		}
 
 		return '#NO_DATA#';
